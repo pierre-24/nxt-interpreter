@@ -8,43 +8,11 @@
  */
 
 #include "Robot.h"
+#include "Constants.h"
 
 #include <cmath>
 
 #include "../Environment/Simulation.h"
-
-namespace
-{
-	const float trackWidth = 0.825f*2.0f;
-
-	// That seems to correspond to the dimension of the robot
-	const float4 standard2DBoundingBox[4] = {
-		float4(1.0,    0.0f, -0.9f),
-		float4(1.0,    0.0f,  0.9f),
-		float4(-0.85f, 0.0f,  0.9f),
-		float4(-0.85f, 0.0f, -0.9f)
-	};
-	
-	const float4 touchSensor2DBoundingBox[4] = {
-		float4(0.45f,  0.0f, -0.125f),
-		float4(0.45f,  0.0f,  0.125f),
-		float4(0.375f, 0.0f,  0.125f),
-		float4(0.375f, 0.0f, -0.125f)
-	};
-	
-	const float boundingBox3DHeight = 1.1f;
-	
-	const float ultrasoundRange = 1000.0f;
-	const float ultrasoundDistanceScale = 5.0f;
-	const float noiseLevelScale = 10.0f;
-	const float touchRange = 0.25f;
-	const float lightRange = 100.0f;
-	
-	const float sensorYOffset = 0.2f;
-	const float sensorXOffset = 1.15f;
-	
-	const float wheelDiameter = 0.4f;
-}
 
 Robot::Robot(Simulation *aSimulation)
 : simulation(aSimulation)
@@ -105,18 +73,18 @@ void Robot::updatePhysics(float timedelta) throw()
 	lastPosition = position;
 	
 	// Update speed data
-	setLeftTrackSpeed(motors[leftMotor].getSpeed() * wheelDiameter);
-	setRightTrackSpeed(motors[rightMotor].getSpeed() * wheelDiameter);	
+	setLeftTrackSpeed(motors[leftMotor].getSpeed() * RobotConstant::wheelDiameter);
+	setRightTrackSpeed(motors[rightMotor].getSpeed() * RobotConstant::wheelDiameter);
 	
 	if (!lifted)
 	{
-		// Move according to position
-		float deltaSleft = motors[leftMotor].turn(timedelta) * (float(M_PI) / 360.0f) * wheelDiameter;
-		float deltaSright = motors[rightMotor].turn(timedelta) * (float(M_PI) / 360.0f) * wheelDiameter;
+		// Move according to position (speed * wheel perimeter)
+		float deltaSleft = motors[leftMotor].turn(timedelta) * (float(M_PI) / 360.0f) * RobotConstant::wheelDiameter;
+		float deltaSright = motors[rightMotor].turn(timedelta) * (float(M_PI) / 360.0f) * RobotConstant::wheelDiameter;
 		
 		float deltaStotal = (deltaSleft + deltaSright) * 0.5f;
 		
-		float deltaYaw = std::atan((deltaSleft - deltaSright) / trackWidth);
+		float deltaYaw = std::atan((deltaSleft - deltaSright) / RobotConstant::trackWidth);
 		
 		yaw = fmodf(yaw + deltaYaw, 2.0f * float(M_PI));
 		
@@ -143,7 +111,7 @@ void Robot::updatePhysics(float timedelta) throw()
 		if (sensors[i].type == Light)
 		{
 			// Return in a range from 0 to 1
-			float4 rayDirection = sensorDirection * lightRange;
+			float4 rayDirection = sensorDirection * RobotConstant::lightRange;
 			float length;
 			if (!simulation->firstHitOfRay(ray4(sensorLocation.w, sensorLocation.w + rayDirection), true, length))
 				continue;
@@ -159,7 +127,7 @@ void Robot::updatePhysics(float timedelta) throw()
 			// Return 1 if something is hit, 0 otherwise
 			float4 orientedBoundingBox[4];
 			for (unsigned j = 0; j < 4; j++)
-				orientedBoundingBox[j] = sensorLocation * touchSensor2DBoundingBox[j];
+				orientedBoundingBox[j] = sensorLocation * RobotConstant::touchSensor2DBoundingBox[j];
 			
 			bool doesHit = simulation->objectCollidesWithOthers(orientedBoundingBox);
 			sensors[i].value = float(doesHit);
@@ -171,13 +139,13 @@ void Robot::updatePhysics(float timedelta) throw()
 		else if (sensors[i].type == Ultrasound)
 		{
 			// Return length in centimeters
-			float4 rayDirection = sensorDirection * ultrasoundRange;
+			float4 rayDirection = sensorDirection * RobotConstant::ultrasoundRange;
 			float length;
 			
 			if (!simulation->firstHitOfRay(ray4(sensorLocation.w, sensorLocation.w + rayDirection), false, length))
 				continue;
 			
-			sensors[i].value = (length * ultrasoundRange) * ultrasoundDistanceScale;
+			sensors[i].value = (length * RobotConstant::ultrasoundRange) * RobotConstant::ultrasoundDistanceScale;
 		}		
 	}
 	
@@ -190,8 +158,8 @@ bool Robot::touchHitByRay(const ray4 &ray, float &length, float scaleFactor) con
 	ray4 relativeRay = position.inverse() * ray;
 
 	// Find max and min coordinates in robot space
-	float4 max(standard2DBoundingBox[1].x, boundingBox3DHeight, standard2DBoundingBox[1].z);
-	float4 min(standard2DBoundingBox[3].x, 0.0f, standard2DBoundingBox[3].z);
+	float4 max(RobotConstant::standard2DBoundingBox[1].x, RobotConstant::boundingBox3DHeight, RobotConstant::standard2DBoundingBox[1].z);
+	float4 min(RobotConstant::standard2DBoundingBox[3].x, 0.0f, RobotConstant::standard2DBoundingBox[3].z);
 	
 	max *= scaleFactor;
 	min *= scaleFactor;
@@ -224,7 +192,7 @@ void Robot::setPosition(const matrix &newLocation) throw()
 	
 	// Find bounding boxes
 	for (unsigned i = 0; i < 4; i++)
-		obb[i] = position * standard2DBoundingBox[i];
+		obb[i] = position * RobotConstant::standard2DBoundingBox[i];
 	
 	aabb[0] = obb[0].min(obb[1].min(obb[2].min(obb[3])));
 	aabb[1] = obb[0].max(obb[1].max(obb[2].max(obb[3])));
@@ -279,7 +247,7 @@ float Robot::getSensorOffset(unsigned sensor) const throw(std::out_of_range)
 {
 	if (sensor > 3) throw std::out_of_range("Sensor port out of range");
 	
-	return sensorXOffset;
+	return RobotConstant::sensorXOffset;
 }
 
 void Robot::setSensorAngle(unsigned sensor, float angleInDegrees) throw(std::out_of_range)
@@ -289,7 +257,7 @@ void Robot::setSensorAngle(unsigned sensor, float angleInDegrees) throw(std::out
 	sensors[sensor].angle = angleInDegrees;
 	
 	matrix rotationMatrix = matrix::rotation(float4(0, 1, 0, 0), angleInDegrees * (float(M_PI) / 180.0f));
-	matrix positionMatrix = matrix::position(float4(getSensorOffset(sensor), sensorYOffset, 0));
+	matrix positionMatrix = matrix::position(float4(getSensorOffset(sensor), RobotConstant::sensorYOffset, 0));
 	
 	sensors[sensor].relativePosition = rotationMatrix * positionMatrix;
 }

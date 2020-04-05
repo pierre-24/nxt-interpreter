@@ -1,0 +1,9 @@
+// turn by 90° = pi/2 radians.
+
+thread main
+    OnFwd(OUT_A,20) // Note: left and right motors are assumed to be on OUT_A and OUT_B
+    OnFwd(OUT_B,-20)
+    wait 1856
+    Off(OUT_AB)
+    wait 100 // motor are off, waiting extra 100 ms does not change anything ;)
+endt

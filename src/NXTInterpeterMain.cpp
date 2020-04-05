@@ -7,8 +7,8 @@
 #include "Environment/Simulation.h"
 #include "Robot/SingleRobotNetworkInterface.h"
 
-#define EXEC_FRACTION 0.01f // [%]
-#define TOTAL_ROUND .01f // [s]
+#define EXEC_FRACTION 0.1f // [%]
+#define TOTAL_ROUND .001f // [s]
 
 void printUsageAndExit(const std::string& pname)
 {
@@ -54,19 +54,22 @@ int main(int argc, char *argv[]) {
     float run_time = EXEC_FRACTION * TOTAL_ROUND;
     int nperiod = 0;
     bool running = true;
-    unsigned long start, end;
 
-    std::cout << ".note period is " << int(TOTAL_ROUND * 1000) << " ms" << std::endl;
+    std::cout << ".note period is (about) " << int(TOTAL_ROUND * 1000) << " ms" << std::endl;
 
     std::cout << "-- start (at t=" << context->getTick() << " ms)" << std::endl;
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     while (running) {
-        start = context->getTick();
         running = context->runForTime(run_time);
-        simulation->update(TOTAL_ROUND);
-        end = context->getTick();
-        nperiod++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(int(TOTAL_ROUND * 1000.f) - int(end - start)));
+        auto now = std::chrono::high_resolution_clock::now();
+        simulation->update(float(std::chrono::duration_cast<std::chrono::microseconds>(now - start).count()) / 1000000.f);
+        start = now;
+        nperiod += 1;
+
+        if(running)
+            std::this_thread::sleep_for(std::chrono::microseconds (int((TOTAL_ROUND - run_time) * 1000000.f)));
     }
 
     std::cout << "-- end (at t=" << context->getTick() << " ms, nperiod=" << nperiod << ")" << std::endl;

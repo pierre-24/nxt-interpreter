@@ -8,14 +8,10 @@
  */
 
 #include "Motor.h"
+#include "Constants.h"
 
 #include <cmath>
 #include <algorithm>
-
-namespace
-{
-	const float powerToSpeedFactor = 10.0f;
-}
 
 Motor::Motor()
 : power(0.0f),turnLimit(0.0f), turnedSinceTurnLimitReset(0.0f), blockCounter(0.0f), rotationCounter(0.0f), syncState(NotSynced)
@@ -121,7 +117,7 @@ float Motor::getSpeed() const throw()
 	else if (syncState == IsRight)
 		effectivePower = power * std::min(std::max(2.0f*robotTurnFactor + 1.f, -1.f), 1.f);
 	
-	return effectivePower * powerToSpeedFactor;
+	return effectivePower * MotorConstant::powerToSpeedFactor;
 }
 
 bool Motor::isRunning() const throw()

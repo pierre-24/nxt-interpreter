@@ -7,9 +7,9 @@
  *
  */
 
-#include "ExecutionContext.h"
+#include <chrono>
 
-#include <iostream>
+#include "ExecutionContext.h"
 
 #include "../Robot/NetworkInterface.h"
 #include "../Interpreter/Interpreter.h"
@@ -75,12 +75,13 @@ bool ExecutionContext::runForTime(float mintime) noexcept(false)
 	if (isPaused) return true;
 	
 	unsigned long start = millisecondsSinceStart();
+	auto precise_start = std::chrono::high_resolution_clock::now();
 	
 	if (interpreter->waitingUntilTick() > start)
 		return true;
 
 	bool executable = true;
-	while ((float(millisecondsSinceStart()-start)/1000.0f) < mintime && executable)
+	while ((float(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - precise_start).count())/1000000.0f) < mintime && executable)
 	    executable = interpreter->step();
 
     return executable;
