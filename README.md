@@ -24,8 +24,10 @@ I did a bit of cleaning by giving a little bit of structure in the files of the 
 + [`src/Environement/` folder](src/Environment): related to the robot environment in which it moves, corresponding to a kind of "map". In particular, it deals with the light sensor and the collisions.
 + [`src/utils` folder](src/utils): the traditional `utils` folder (here [time](src/utils/Time.h), [byte manipulations](src/utils/ByteOrder.h) and [vectors](src/utils/Vec4.h)).
 
+Note that the robot position is updated out of the movement of the motors. Took me some time to figure it out :)
+
 ## Note: dropped stuffs from the original simulator
 
 + [`Drawer`](https://github.com/InfoSphereAC/RoboSim/blob/master/Drawer.cpp), and basically the graphical part (rely on SDL) ;
 + [`RobotSpeaker`](https://github.com/InfoSphereAC/RoboSim/blob/master/RobotSpeaker.cpp), which use OpenAL for nothing much (we don't play sounds here).
-+ [`Client`](https://github.com/InfoSphereAC/RoboSim/blob/master/Client.cpp) and [`Server`](https://github.com/InfoSphereAC/RoboSim/blob/master/Server.cpp), since I only need a single robot here. Thus, I'll provide a dummy network interface.
++ [`Client`](https://github.com/InfoSphereAC/RoboSim/blob/master/Client.cpp) and [`Server`](https://github.com/InfoSphereAC/RoboSim/blob/master/Server.cpp), since I only need a single robot here. Thus, I'll use the [`Single` one](https://github.com/InfoSphereAC/RoboSim/blob/master/Single.h).

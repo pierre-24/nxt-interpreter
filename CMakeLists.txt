@@ -18,6 +18,7 @@ add_executable(nxt_interpreter
         src/Robot/Motor.cpp
         src/Robot/Robot.cpp
         src/Robot/NetworkInterface.cpp
+        src/Robot/SingleRobotNetworkInterface.cpp
         # environment
         src/Environment/Environment.cpp
         src/Environment/Simulation.cpp
