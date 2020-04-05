@@ -12,7 +12,7 @@
 #include <fstream>
 #include <cstring>
 
-#include "ByteOrder.h"
+#include "../../ByteOrder.h"
 
 RXEFile::RXEFile(const char *filename) throw(std::runtime_error)
 {

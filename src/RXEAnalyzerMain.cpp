@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-#include "Interpreter.h"
-#include "RXEFile.h"
-#include "VMMemory.h"
+#include "Execution/RXEFile.h"
+#include "System/VMMemory.h"
+#include "Interpreter/OpcodeName.h"
 
 void printUsageAndExit(const std::string& pname)
 {
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 			
 			enum { ImmNone=0, ImmFirst=0x1, ImmLast=0x2, ImmBoth=0x3 } isImmediate = ImmNone;
 			
-			std::cout << Interpreter::nameForOpcode(opcode) << " ";
+			std::cout << nameForOpcode(opcode) << " ";
 			
 			// Special cases
 			switch (opcode)

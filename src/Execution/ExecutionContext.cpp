@@ -11,12 +11,12 @@
 
 #include <iostream>
 
-#include "NetworkInterface.h"
-#include "Interpreter.h"
+#include "../Robot/NetworkInterface.h"
+#include "../Interpreter/Interpreter.h"
 #include "RXEFile.h"
-#include "System.h"
-#include "Time.h"
-#include "VMMemory.h"
+#include "../System/System.h"
+#include "../utils/Time.h"
+#include "../System/VMMemory.h"
 
 ExecutionContext::ExecutionContext(const char *aFilename) noexcept(false)
 : filename(aFilename), file(nullptr), memory(nullptr), system(nullptr), interpreter(nullptr), networkInterface(nullptr)

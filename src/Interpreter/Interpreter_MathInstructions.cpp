@@ -11,8 +11,8 @@
 
 #include <iostream>
 
-#include "RXEFile.h"
-#include "VMMemory.h"
+#include "../Execution/RXEFile.h"
+#include "../System/VMMemory.h"
 
 void Interpreter::op_add(unsigned flags, const uint16_t *params)
 {

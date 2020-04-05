@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 #include "Motor.h"
-#include "Vec4.h"
+#include "../utils/Vec4.h"
 
 class Simulation;
 // class RobotSpeaker;

@@ -4,59 +4,37 @@ project(nxt_interpreter)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(nxt_interpreter
-        main.cpp
+        src/NXTInterpeterMain.cpp
+        # utils
+        src/utils/Time.c
+        src/utils/Vec4.cpp
         # execution context
-        ExecutionContext.cpp
-        # RXE file
-        RXEFile.cpp
-        # virtual memory
-        VMMemory.cpp
-        # system
-        System.cpp
-        Time.c
+        src/Execution/ExecutionContext.cpp
+        src/Execution/RXEFile.cpp
+        # virtual memory and system
+        src/System/VMMemory.cpp
+        src/System/System.cpp
         # robot stuffs
-        Motor.cpp
-        Robot.cpp
-        Vec4.cpp
-        # network interface
-        NetworkInterface.cpp
+        src/Robot/Motor.cpp
+        src/Robot/Robot.cpp
+        src/Robot/NetworkInterface.cpp
         # environment
-        Environment.cpp
-        Simulation.cpp
+        src/Environment/Environment.cpp
+        src/Environment/Simulation.cpp
         # interpreter
-        Interpreter.cpp
-        Interpreter_CompareInstructions.cpp
-        Interpreter_ControlFlowInstructions.cpp
-        Interpreter_DataManipulationInstructions.cpp
-        Interpreter_LogicalInstructions.cpp
-        Interpreter_MathInstructions.cpp
-        Interpreter_SystemIOInstructions.cpp)
+        src/Interpreter/Interpreter.cpp
+        src/Interpreter/Interpreter_CompareInstructions.cpp
+        src/Interpreter/Interpreter_ControlFlowInstructions.cpp
+        src/Interpreter/Interpreter_DataManipulationInstructions.cpp
+        src/Interpreter/Interpreter_LogicalInstructions.cpp
+        src/Interpreter/Interpreter_MathInstructions.cpp
+        src/Interpreter/Interpreter_SystemIOInstructions.cpp)
 
 add_executable(rxe_analyser
-        RXEAnalyzerMain.cpp
-        # execution context
-        ExecutionContext.cpp
-        # RXE file
-        RXEFile.cpp
+        src/RXEAnalyzerMain.cpp
+        # file
+        src/Execution/RXEFile.cpp
         # virtual memory
-        VMMemory.cpp
-        # system
-        System.cpp
-        Time.c
-        # robot stuffs
-        Motor.cpp
-        Robot.cpp
-        Vec4.cpp
-        # network interface
-        NetworkInterface.cpp
-        # environment
-        Environment.cpp
-        Simulation.cpp
-        # interpreter
-        Interpreter.cpp
-        Interpreter_CompareInstructions.cpp
-        Interpreter_ControlFlowInstructions.cpp
-        Interpreter_DataManipulationInstructions.cpp
-        Interpreter_LogicalInstructions.cpp
-        Interpreter_MathInstructions.cpp
-        Interpreter_SystemIOInstructions.cpp)
+        src/System/VMMemory.cpp
+        # opcode name
+        src/Interpreter/OpcodeName.cpp)

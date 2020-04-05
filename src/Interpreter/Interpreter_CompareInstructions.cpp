@@ -11,8 +11,8 @@
 
 #include <iostream>
 
-#include "RXEFile.h"
-#include "VMMemory.h"
+#include "../Execution/RXEFile.h"
+#include "../System/VMMemory.h"
 
 bool Interpreter::compare(unsigned mode, int a, int b)
 {

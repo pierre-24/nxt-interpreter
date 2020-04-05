@@ -14,8 +14,8 @@
 #include <algorithm>
 #include <cstring>
 
-#include "NetworkInterface.h"
-#include "Time.h"
+#include "../Robot/NetworkInterface.h"
+#include "../utils/Time.h"
 #include "VMMemory.h"
 
 const char *System::nameForInputPartID(unsigned ID)

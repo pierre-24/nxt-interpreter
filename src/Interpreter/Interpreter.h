@@ -123,17 +123,6 @@ public:
 	void step();
 	
 	/*!
-	 * @abstract Debug method: Returns the name for an opcode.
-	 * @discussion The returned name is taken directly from the official
-	 * documentation. Returns "OP_UNKNOWN" for opcode values that do not exist.
-	 * This method is mainly meant for debugging purposes.
-	 * @param opcode The opcode of an instruction.
-	 * @result The name of the instruction per the programming manual, or
-	 * OP_UNKNOWN if no such instruction exists.
-	 */
-	static const char *nameForOpcode(unsigned opcode);
-	
-	/*!
 	 * @abstract Tick at which the robot will next do something.
 	 * @discussion If the robot is in wait mode, it will do nothing and no
 	 * operation will be executed. With this, users can find out how long it

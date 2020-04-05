@@ -12,9 +12,9 @@
 #include <ctime>
 #include <iostream>
 
-#include "RXEFile.h"
-#include "System.h"
-#include "VMMemory.h"
+#include "../Execution/RXEFile.h"
+#include "../System/System.h"
+#include "../System/VMMemory.h"
 
 void Interpreter::op_syscall(unsigned flags, const uint16_t *params)
 {
