@@ -20,8 +20,8 @@ Robot::Robot(Simulation *aSimulation)
 	yaw = 0;
 	
 	position.w = float4(10, 0, 10);
-	leftMotor = 0;
-	rightMotor = 1;
+	leftMotor = RobotConstant::leftMotor;
+	rightMotor = RobotConstant::rightMotor;
 	
 	setSensorAngle(0, -30.0f);
 	setSensorType(0, Touch);

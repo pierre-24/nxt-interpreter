@@ -18,7 +18,11 @@ void printUsageAndExit(const std::string& pname)
 }
 
 void printRobotInfo(const Robot* robot) {
-    std::cout << "position of the robot is x=" << robot->getPosition()[3][0] << ";y=" <<  robot->getPosition()[3][2]<< ";theta=" << std::acos(robot->getPosition()[0][0]) / M_PI * 180.f;
+    std::cout << "position of the robot is "
+    << "x=" << robot->getPosition()[3][0]
+    << ";y=" <<  robot->getPosition()[3][2]
+    // TODO: is this assuming an opposite convention w.r.t. the trigonometric one?
+    << ";theta=" << std::acos(robot->getPosition()[0][0]) / M_PI * 180. * ((robot->getPosition()[2][0] > 0)? -1. : 1.);
 }
 
 int main(int argc, char *argv[]) {

@@ -13,6 +13,39 @@ You need `CMake` ...
 
 ... And I need to understand how to properly compile a release binary in a place that is not hidden (`cmake .; cd build; make` ... something like that would be nice).
 
+## Note: the bot and its movement
+
+By default, the bot is dropped at a random position (that may change in the future) in a 25x25 map surrounded by wall.
+The bot itself is about 2x2 (see its exact dimension in [`src/Robot/Constants.h`](src/Robot/Constants.h)).
+It may not go outside the map since the simulator checks for collisions.
+
+Basically, the interpreter assume that `OUT_A` is the left motor and `OUT_B` the right one.
+Thus, in NBC, moving the bot forward is basically (see [there](tests/simple.nbc)):
+
+```c
+OnFwd(OUT_AB,100) // p = 100
+wait 2000 // t = 2s
+```
+
+The following formula help to compute the distance:
+
++ `v(p) = p * f * D * π / 360` where `p` is the power (given to the motor as second parameter of `OnFwd()`), `f` is the power to speed ratio (10 is the current code) and `D` is the diameter of a wheel (0.4 in the current code). This give you the **speed** of the robot depending on the power.
++ `x(p,t) = v(p) * t`: this give you the **distance** that the robot will travel in a given `t` time (in second).
++ Thus, `t(p) = 1 / v(p)` gives you the time required to move by one unit of distance.
+
+**Turning** is a bit tricky, but one way to do it is to give a reverse power value to both motors (see [there](tests/simpleturn.nbc)):
+
+```c
+OnFwd(OUT_A,20) // p=20
+OnFwd(OUT_B,-20) // works as well with `OnRev(OUT_B,20)`
+wait 1856 // t=1.856 s
+```
+
+By setting the left motor forward and right motor backward, one turn right.
+
+Here, time is the key ingredient to arrive to the right angle. It is given by the following formula : `t(p) = D' / (p * f * D) * 180`, where `D'` is the half width of the robot (currently 0.825).
+Sadly, due to the precision of the hardware and the values (only integer values), the angle is not exactly 90°. Except if you move veeeeeeeery slowly.
+
 ## Note: the project structure
 
 I did a bit of cleaning by giving a little bit of structure in the files of the [`src/` folder](src/)

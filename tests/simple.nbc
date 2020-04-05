@@ -1,8 +1,9 @@
 // just move forward for 2 seconds
 
 thread main
-    OnFwd(OUT_A,100) // Note: left and right motors are assumed to be on OUT_A and OUT_B
-    OnFwd(OUT_B,100)
+    OnFwd(OUT_AB,100) // Note: left and right motors are assumed to be on OUT_A and OUT_B
     wait 2000 // with the current parameters, that should be about 7 units of distance
     exit
 endt
+
+// note: don't mind the `ignored finclump` reported by the interpreter, it is not important
