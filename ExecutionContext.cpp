@@ -18,7 +18,7 @@
 #include "Time.h"
 #include "VMMemory.h"
 
-ExecutionContext::ExecutionContext(const char *aFilename) throw (std::runtime_error)
+ExecutionContext::ExecutionContext(const char *aFilename) noexcept(false)
 : filename(aFilename), file(nullptr), memory(nullptr), system(nullptr), interpreter(nullptr), networkInterface(nullptr)
 {
 	if (!aFilename) throw std::runtime_error("Filename is NULL");
@@ -36,13 +36,13 @@ ExecutionContext::~ExecutionContext()
 	delete file;
 }
 
-void ExecutionContext::load()
+void ExecutionContext::load() noexcept(false)
 {
 	try {
 		file = new RXEFile(filename.c_str());
 		memory = new VMMemory(file);
-		//system = new System(memory);
-		// interpreter = new Interpreter(file, memory, system);
+		system = new System(memory);
+		interpreter = new Interpreter(file, memory, system);
 	}
 	catch (std::runtime_error& e)
 	{

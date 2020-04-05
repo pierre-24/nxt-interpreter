@@ -13,10 +13,10 @@
 #include "RXEFile.h"
 #include "VMMemory.h"
 
-void printUsageAndExit()
+void printUsageAndExit(const std::string& pname)
 {
 	std::cout << "Generates statistics from RXE files." << std::endl;
-	std::cout << "Usage: RXEAnalyzer inputfile" << std::endl;
+	std::cout << "Usage: "  << pname << " inputfile" << std::endl;
 	exit(0);
 }
 
@@ -64,7 +64,7 @@ void printArgument(unsigned arg, RXEFile *file, bool isImmediate=false)
 
 int main(int argc, char *argv[])
 {
-	if (argc != 2) printUsageAndExit();
+	if (argc != 2) printUsageAndExit(argv[0]);
 	
 	RXEFile *file;
 	
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	{
 		file = new RXEFile(argv[1]);
 	}
-	catch (std::runtime_error a)
+	catch (std::runtime_error& a)
 	{
 		std::cerr << "Error opening file " << argv[1] << ": " << a.what() << std::endl;
 		exit(-1);

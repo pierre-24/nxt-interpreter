@@ -30,7 +30,7 @@ private:
 	
 	bool isPaused;
 	
-	void load();
+	void load() noexcept(false);
 	
 public:
 	/*!
@@ -41,7 +41,7 @@ public:
 	 * @throws std::runtime_error For the reasons given in the classes RXEFile,
 	 * VMMemory, System and Interpreter, or if a NULL filename is passed.
 	 */
-	ExecutionContext(const char *filename) throw (std::runtime_error);
+	ExecutionContext(const char *filename) noexcept(false);
 	
 	/*! Destructor. */
 	virtual ~ExecutionContext();	
