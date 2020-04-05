@@ -97,3 +97,7 @@ void ExecutionContext::setNetworkInterface(NetworkInterface *anInterface)
 	networkInterface = anInterface;
 	system->setNetworkInterface(networkInterface);
 }
+
+unsigned int ExecutionContext::getTick() {
+    return this->system->getTick();
+}

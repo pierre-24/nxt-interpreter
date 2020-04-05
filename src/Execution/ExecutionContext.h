@@ -88,4 +88,9 @@ public:
 	 * @abstract Returns the current interface.
 	 */
 	NetworkInterface *getNetworkInterface() { return networkInterface; }
+
+    /*!
+     * @abstract Returns the ticks.
+     */
+    unsigned int getTick();
 };

@@ -16,7 +16,8 @@
 namespace
 {
 	const float trackWidth = 0.825f*2.0f;
-	
+
+	// That seems to correspond to the dimension of the robot
 	const float4 standard2DBoundingBox[4] = {
 		float4(1.0,    0.0f, -0.9f),
 		float4(1.0,    0.0f,  0.9f),

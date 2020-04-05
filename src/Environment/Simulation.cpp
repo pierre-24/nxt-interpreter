@@ -15,7 +15,6 @@
 
 #include "Environment.h"
 #include "../Robot/Robot.h"
-#include "../utils/Vec4.h"
 
 namespace
 {

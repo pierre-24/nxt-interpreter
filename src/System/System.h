@@ -8,6 +8,7 @@
  */
 
 #include <cstdint>
+#include "../utils/Time.h"
 
 class NetworkInterface;
 class VMMemory;
@@ -34,7 +35,7 @@ class System
 	bool sanitizeSoundFilename(unsigned dstocEntry, char *bufferOut);
 	
 public:
-	System(VMMemory *someMemory) : networkInterface(nullptr), memory(someMemory) {}
+	System(VMMemory *someMemory) : networkInterface(nullptr), memory(someMemory) { startTimeCount(); }
 	
 	void setNetworkInterface(NetworkInterface *anInterface) { networkInterface = anInterface; };
 	
