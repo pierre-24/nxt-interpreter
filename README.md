@@ -8,3 +8,9 @@ Again, the goal here is to test some code [compiled from NBC](https://github.com
 
 
 That being said, lets go.
+
+
+## Note: dropped stuffs
+
++ [`Drawer`](https://github.com/InfoSphereAC/RoboSim/blob/master/Drawer.cpp), and basically the graphical part (rely on SDL) ;
++ [`RobotSpeaker`](https://github.com/InfoSphereAC/RoboSim/blob/master/RobotSpeaker.cpp), which use OpenAL for nothing much.
