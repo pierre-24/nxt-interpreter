@@ -120,7 +120,7 @@ public:
 	/*!
 	 * @abstract Executes a single operation.
 	 */
-	void step();
+    bool step();
 	
 	/*!
 	 * @abstract Tick at which the robot will next do something.

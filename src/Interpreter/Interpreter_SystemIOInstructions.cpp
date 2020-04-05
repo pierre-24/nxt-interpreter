@@ -9,9 +9,6 @@
 
 #include "Interpreter.h"
 
-#include <ctime>
-#include <iostream>
-
 #include "../Execution/RXEFile.h"
 #include "../System/System.h"
 #include "../System/VMMemory.h"

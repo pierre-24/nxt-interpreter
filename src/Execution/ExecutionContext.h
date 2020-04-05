@@ -48,6 +48,7 @@ public:
 	
 	/*!
 	 * @abstract Executes code for the specified number of seconds.
+	 * Return false if there is nothing more to execute.
 	 * @discussion Executes Lego bytecode until at least the time specified here
 	 * has run out. If no interpreter exists, it exits immediately, while for
 	 * lengthy operations, it can return after significantly more than the
@@ -55,7 +56,7 @@ public:
 	 * returns immediately.
 	 * @param mintime The time to execute for.
 	 */
-	void runForTime(float mintime);
+    bool runForTime(float mintime);
 	
 	/*!
 	 * @abstract Sets the interface necessary for communicating with the outside

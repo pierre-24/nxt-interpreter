@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-#include "../../ByteOrder.h"
+#include "../utils/ByteOrder.h"
 #include "../Execution/RXEFile.h"
 
 namespace

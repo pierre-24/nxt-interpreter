@@ -21,12 +21,12 @@ Interpreter::Interpreter(const RXEFile *aFile, VMMemory *aMemory, System *aSyste
 	waitUntil = 0;
 }
 
-void Interpreter::step()
+bool Interpreter::step()
 {
-	if (instruction >= file->getCodeWordCount()) return;
+	if (instruction >= file->getCodeWordCount()) return false;
 	
 	if (system->getTick() < waitUntil)
-		return;
+		return true;
 	
 	const uint16_t *code = file->getCode();
 	
@@ -138,4 +138,5 @@ void Interpreter::step()
 		}
 	}
 
+    return true;
 }
