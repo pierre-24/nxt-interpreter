@@ -1,10 +1,13 @@
 // turn right by 90° = pi/2 radians.
 
 thread main
+
     OnFwd(OUT_A,20) // Note: left and right motors are assumed to be on OUT_A and OUT_B
     OnFwd(OUT_B,-20)
     wait 1856
     Off(OUT_AB)
     OnFwd(OUT_AB, 100)
     wait 100 // thus, y value is reducing
+
+    // RotateMotor(OUT_A, 100, 90) → Does not work !
 endt

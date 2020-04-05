@@ -99,5 +99,7 @@ void Interpreter::op_sqrt(unsigned flags, const uint16_t *params)
 
 void Interpreter::op_abs(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored abs for now." << std::endl;
+	// std::cout << "ignored abs for now." << std::endl;
+	int a = memory->getScalarValue(params[1]);
+	memory->setScalarValue(params[0], abs(a));
 }

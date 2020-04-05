@@ -13,7 +13,7 @@ You need `CMake` ...
 
 ... And I need to understand how to properly compile a release binary in a place that is not hidden (`cmake .; cd build; make` ... something like that would be nice).
 
-## Note: the bot and its movement
+## Note: the robot and its movement
 
 By default, the bot is dropped at a random position (that may change in the future) in a 25x25 map surrounded by wall.
 The bot itself is about 2x2 (see its exact dimension in [`src/Robot/Constants.h`](src/Robot/Constants.h)).
@@ -33,7 +33,7 @@ The following formula help to compute the distance:
 + `x(p,t) = v(p) * t`: this give you the **distance** that the robot will travel in a given `t` time (in second).
 + Thus, `t(p) = 1 / v(p)` gives you the time required to move by one unit of distance.
 
-**Turning** is a bit tricky, but one way to do it is to give a reverse power value to both motors (see [there](tests/simpleturn.nbc)):
+**Turning** is a bit tricky (!! the `RotateMotor()` macro is bugged !!), but one way to do it is to give a reverse power value to both motors (see [there](tests/simpleturn.nbc)):
 
 ```c
 OnFwd(OUT_A,20) // p=20
@@ -45,6 +45,7 @@ By setting the left motor forward and right motor backward, one turn right.
 
 Here, time is the key ingredient to arrive to the right angle. It is given by the following formula : `t(p) = D' / (p * f * D) * 180`, where `D'` is the half width of the robot (currently 0.825).
 Sadly, due to the precision of the hardware and the values (only integer values), the angle is not exactly 90°. Except if you move veeeeeeeery slowly.
+But if you want to play, there is a way to do better by using the rotation counter.
 
 ## Note: the project structure
 
