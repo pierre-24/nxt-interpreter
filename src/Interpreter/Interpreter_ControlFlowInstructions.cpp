@@ -63,12 +63,24 @@ void Interpreter::op_stop(unsigned flags, const uint16_t *params)
 
 void Interpreter::op_finclump(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored finclump" << std::endl;
+    // parameters:
+    // 0: start, immediate.
+    // 1: end, immediate.
+
+    instruction = this->file->getCodeWordCount() + 1;
+
+    if(params[0] != 0xffff) {
+        std::cout << "op_finclump would schedule clumps " << params[0] << " to " << params[1] << std::endl;
+    } // TODO: schedule other clumps ?
 }
 
 void Interpreter::op_finclumpimmed(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored finclumpimmed" << std::endl;
+    // parameters:
+    // 0: clumpId, immediate. Clump to schedule (?)
+
+    currentClump = params[0];
+    instruction = file->getCodeStartForClump(currentClump); // TODO: schedule ?
 }
 
 void Interpreter::op_acquire(unsigned flags, const uint16_t *params)

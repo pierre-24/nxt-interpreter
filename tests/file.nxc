@@ -1,0 +1,6 @@
+task main() {
+    byte handle;
+    CreateFile("stuff.txt",24,handle);
+    WriteLn(handle, 1);
+    CloseFile(handle);
+}
