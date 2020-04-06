@@ -58,13 +58,13 @@ class InterpreterThread
 	void op_mul(unsigned flags, const uint16_t *params);
 	void op_div(unsigned flags, const uint16_t *params);
 	void op_mod(unsigned flags, const uint16_t *params);
-	void op_sqrt(unsigned flags, const uint16_t *params);
+	void op_sqrt(unsigned flags, const uint16_t *params); // not implemented
 	void op_abs(unsigned flags, const uint16_t *params);
 	
 	// Logical Instructions
-	void op_and(unsigned flags, const uint16_t *params);
-	void op_or(unsigned flags, const uint16_t *params);
-	void op_xor(unsigned flags, const uint16_t *params);
+	void op_and(unsigned flags, const uint16_t *params); // not implemented
+	void op_or(unsigned flags, const uint16_t *params); // not implemented
+	void op_xor(unsigned flags, const uint16_t *params); // not implemented
 	void op_not(unsigned flags, const uint16_t *params);
 	
 	// Compare Instructions
@@ -73,21 +73,21 @@ class InterpreterThread
 	
 	// Data manipulation Instructions
 	void op_index(unsigned flags, const uint16_t *params);
-	void op_replace(unsigned flags, const uint16_t *params);
+	void op_replace(unsigned flags, const uint16_t *params); // not implemented
 	void op_arrsize(unsigned flags, const uint16_t *params);
 	void op_arrbuild(unsigned flags, const uint16_t *params);
-	void op_arrsubset(unsigned flags, const uint16_t *params);
+	void op_arrsubset(unsigned flags, const uint16_t *params); // not implemented
 	void op_arrinit(unsigned flags, const uint16_t *params);
 	void op_mov(unsigned flags, const uint16_t *params);
 	void op_set(unsigned flags, const uint16_t *params);
-	void op_flatten(unsigned flags, const uint16_t *params);
-	void op_unflatten(unsigned flags, const uint16_t *params);
-	void op_numtostring(unsigned flags, const uint16_t *params);
-	void op_stringtonum(unsigned flags, const uint16_t *params);
-	void op_strcat(unsigned flags, const uint16_t *params);
-	void op_strsubset(unsigned flags, const uint16_t *params);
-	void op_strtobytearr(unsigned flags, const uint16_t *params);
-	void op_bytearrtostr(unsigned flags, const uint16_t *params);
+	void op_flatten(unsigned flags, const uint16_t *params); // not implemented
+	void op_unflatten(unsigned flags, const uint16_t *params); // not implemented
+	void op_numtostring(unsigned flags, const uint16_t *params); // not implemented
+	void op_stringtonum(unsigned flags, const uint16_t *params); // not implemented
+	void op_strcat(unsigned flags, const uint16_t *params); // not implemented
+	void op_strsubset(unsigned flags, const uint16_t *params); // not implemented
+	void op_strtobytearr(unsigned flags, const uint16_t *params); // not implemented
+	void op_bytearrtostr(unsigned flags, const uint16_t *params); // not implemented
 	
 	// Control flow Instructions
 	void op_jmp(unsigned flags, const uint16_t *params);
@@ -96,8 +96,8 @@ class InterpreterThread
 	void op_stop(unsigned flags, const uint16_t *params);
 	void op_finclump(unsigned flags, const uint16_t *params);
 	void op_finclumpimmed(unsigned flags, const uint16_t *params);
-	void op_acquire(unsigned flags, const uint16_t *params);
-	void op_release(unsigned flags, const uint16_t *params);
+	void op_acquire(unsigned flags, const uint16_t *params); // not implemented
+	void op_release(unsigned flags, const uint16_t *params); // not implemented
 	void op_subcall(unsigned flags, const uint16_t *params);
 	void op_subret(unsigned flags, const uint16_t *params);
 	
