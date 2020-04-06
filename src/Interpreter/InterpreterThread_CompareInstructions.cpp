@@ -7,14 +7,12 @@
  *
  */
 
-#include "Interpreter.h"
-
-#include <iostream>
+#include "InterpreterThread.h"
 
 #include "../Execution/RXEFile.h"
 #include "../System/VMMemory.h"
 
-bool Interpreter::compare(unsigned mode, int a, int b)
+bool InterpreterThread::compare(unsigned mode, int a, int b)
 {
 	switch (mode)
 	{
@@ -35,7 +33,7 @@ bool Interpreter::compare(unsigned mode, int a, int b)
 	}
 }
 
-void Interpreter::op_cmp(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_cmp(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location - store result here
@@ -46,7 +44,7 @@ void Interpreter::op_cmp(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], compare(flags, a, b));
 }
 
-void Interpreter::op_tst(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_tst(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location - store result here

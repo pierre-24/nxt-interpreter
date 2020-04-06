@@ -7,29 +7,29 @@
  *
  */
 
-#include "Interpreter.h"
+#include "InterpreterThread.h"
 
 #include <iostream>
 
 #include "../Execution/RXEFile.h"
 #include "../System/VMMemory.h"
 
-void Interpreter::op_and(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_and(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored and" << std::endl;
 }
 
-void Interpreter::op_or(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_or(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored or" << std::endl;
 }
 
-void Interpreter::op_xor(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_xor(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored xor" << std::endl;
 }
 
-void Interpreter::op_not(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_not(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location

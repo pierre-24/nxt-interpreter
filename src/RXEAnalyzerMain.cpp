@@ -128,8 +128,11 @@ int main(int argc, char *argv[])
 		std::cout << i << ":\t\t";
 		std::cout << file->getFireCountForClump(i) << "\t";
 		std::cout << file->getCodeStartForClump(i) << "\t";
-		for (unsigned j = 0; j < file->getDependentCountForClump(i); j++)
-			std::cout << file->getDependentsForClump(i)[j];
+		for (unsigned j = 0; j < file->getDependentCountForClump(i); j++) {
+		    if (j != 0)
+		        std::cout << ",";
+			std::cout << int(file->getDependentsForClump(i)[j]);
+        }
 		std::cout << std::endl;
 	}
 	

@@ -24,12 +24,13 @@ add_executable(nxt_interpreter
         src/Environment/Simulation.cpp
         # interpreter
         src/Interpreter/Interpreter.cpp
-        src/Interpreter/Interpreter_CompareInstructions.cpp
-        src/Interpreter/Interpreter_ControlFlowInstructions.cpp
-        src/Interpreter/Interpreter_DataManipulationInstructions.cpp
-        src/Interpreter/Interpreter_LogicalInstructions.cpp
-        src/Interpreter/Interpreter_MathInstructions.cpp
-        src/Interpreter/Interpreter_SystemIOInstructions.cpp)
+        src/Interpreter/InterpreterThread.cpp
+        src/Interpreter/InterpreterThread_CompareInstructions.cpp
+        src/Interpreter/InterpreterThread_ControlFlowInstructions.cpp
+        src/Interpreter/InterpreterThread_DataManipulationInstructions.cpp
+        src/Interpreter/InterpreterThread_LogicalInstructions.cpp
+        src/Interpreter/InterpreterThread_MathInstructions.cpp
+        src/Interpreter/InterpreterThread_SystemIOInstructions.cpp)
 
 add_executable(rxe_analyser
         src/RXEAnalyzerMain.cpp

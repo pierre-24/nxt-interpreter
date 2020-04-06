@@ -7,14 +7,14 @@
  *
  */
 
-#include "Interpreter.h"
+#include "InterpreterThread.h"
 
 #include <iostream>
 
 #include "../Execution/RXEFile.h"
 #include "../System/VMMemory.h"
 
-void Interpreter::op_index(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_index(unsigned flags, const uint16_t *params)
 {
 	// Store element of array in scalar
 	// Params:
@@ -28,12 +28,12 @@ void Interpreter::op_index(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], memory->getArrayElement(params[1], index));
 }
 
-void Interpreter::op_replace(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_replace(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored replace" << std::endl;
 }
 
-void Interpreter::op_arrsize(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_arrsize(unsigned flags, const uint16_t *params)
 {
 	// Stores size of array in scalar
 	// Params:
@@ -43,7 +43,7 @@ void Interpreter::op_arrsize(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], memory->getArrayLength(params[1]));
 }
 
-void Interpreter::op_arrbuild(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_arrbuild(unsigned flags, const uint16_t *params)
 {
 	// Builds an array out of its parameters
 	// 0: Total size of instruction, immediate
@@ -58,12 +58,12 @@ void Interpreter::op_arrbuild(unsigned flags, const uint16_t *params)
 		memory->setArrayElement(params[1], i, memory->getScalarValue(params[2 + i]));
 }
 
-void Interpreter::op_arrsubset(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_arrsubset(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored arrsubset" << std::endl;
 }
 
-void Interpreter::op_arrinit(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_arrinit(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination array, memory location
@@ -79,7 +79,7 @@ void Interpreter::op_arrinit(unsigned flags, const uint16_t *params)
 		memory->setArrayElement(params[0], i, newVal);
 }
 
-void Interpreter::op_mov(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_mov(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -105,7 +105,7 @@ void Interpreter::op_mov(unsigned flags, const uint16_t *params)
 		memory->setScalarValue(params[0], memory->getScalarValue(params[1]));
 }
 
-void Interpreter::op_set(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_set(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: location (memory location)
@@ -114,42 +114,42 @@ void Interpreter::op_set(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], params[1]);
 }
 
-void Interpreter::op_flatten(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_flatten(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored flatten" << std::endl;
 }
 
-void Interpreter::op_unflatten(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_unflatten(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored unflatten" << std::endl;
 }
 
-void Interpreter::op_numtostring(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_numtostring(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored numtostring" << std::endl;
 }
 
-void Interpreter::op_stringtonum(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_stringtonum(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored stringtonum" << std::endl;
 }
 
-void Interpreter::op_strcat(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_strcat(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored strcat" << std::endl;
 }
 
-void Interpreter::op_strsubset(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_strsubset(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored strsubset" << std::endl;
 }
 
-void Interpreter::op_strtobytearr(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_strtobytearr(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored strtobytearr" << std::endl;
 }
 
-void Interpreter::op_bytearrtostr(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_bytearrtostr(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored bytearrtostr" << std::endl;
 }

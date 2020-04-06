@@ -7,14 +7,14 @@
  *
  */
 
-#include "Interpreter.h"
+#include "InterpreterThread.h"
 
 #include <iostream>
 
 #include "../Execution/RXEFile.h"
 #include "../System/VMMemory.h"
 
-void Interpreter::op_add(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_add(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -27,7 +27,7 @@ void Interpreter::op_add(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], a + b);
 }
 
-void Interpreter::op_sub(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_sub(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -40,7 +40,7 @@ void Interpreter::op_sub(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], a - b);
 }
 
-void Interpreter::op_neg(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_neg(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -51,7 +51,7 @@ void Interpreter::op_neg(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], -a);
 }
 
-void Interpreter::op_mul(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_mul(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -64,7 +64,7 @@ void Interpreter::op_mul(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], a * b);
 }
 
-void Interpreter::op_div(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_div(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -78,7 +78,7 @@ void Interpreter::op_div(unsigned flags, const uint16_t *params)
 	else memory->setScalarValue(params[0], a / b);
 }
 
-void Interpreter::op_mod(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_mod(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -92,12 +92,12 @@ void Interpreter::op_mod(unsigned flags, const uint16_t *params)
 	else memory->setScalarValue(params[0], a % b);
 }
 
-void Interpreter::op_sqrt(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_sqrt(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored sqrt" << std::endl;
 }
 
-void Interpreter::op_abs(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_abs(unsigned flags, const uint16_t *params)
 {
 	// std::cout << "ignored abs for now." << std::endl;
 	int a = memory->getScalarValue(params[1]);

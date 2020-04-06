@@ -7,13 +7,13 @@
  *
  */
 
-#include "Interpreter.h"
+#include "InterpreterThread.h"
 
 #include "../Execution/RXEFile.h"
 #include "../System/System.h"
 #include "../System/VMMemory.h"
 
-void Interpreter::op_syscall(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_syscall(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: SyscallID, immediate value
@@ -25,7 +25,7 @@ void Interpreter::op_syscall(unsigned flags, const uint16_t *params)
 	system->syscall(syscallID, paramCluster);
 }
 
-void Interpreter::op_setin(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_setin(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Source, memory location
@@ -39,13 +39,13 @@ void Interpreter::op_setin(unsigned flags, const uint16_t *params)
 	system->setInputConfiguration(port, propID, source);
 }
 
-void Interpreter::configureOutputForPort(unsigned port, unsigned numParams, const uint16_t *params)
+void InterpreterThread::configureOutputForPort(unsigned port, unsigned numParams, const uint16_t *params)
 {
 	for (unsigned i = 0; i < numParams; i += 2)
 		system->setOutputConfiguration(port, params[i], memory->getScalarValue(params[i+1]));
 }
 
-void Interpreter::op_setout(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_setout(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Total size of instruction, immediate
@@ -72,7 +72,7 @@ void Interpreter::op_setout(unsigned flags, const uint16_t *params)
 	}
 }
 
-void Interpreter::op_getin(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_getin(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -86,7 +86,7 @@ void Interpreter::op_getin(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], result);
 }
 
-void Interpreter::op_getout(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_getout(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location
@@ -100,7 +100,7 @@ void Interpreter::op_getout(unsigned flags, const uint16_t *params)
 	memory->setScalarValue(params[0], result);
 }
 
-void Interpreter::op_wait(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_wait(unsigned flags, const uint16_t *params)
 {
 	// This operation is not specified by the newest firmware description
 	// I could find, but NXC will emit it under some circumstances.
@@ -113,7 +113,7 @@ void Interpreter::op_wait(unsigned flags, const uint16_t *params)
 	waitUntil = system->getTick() + memory->getScalarValue(params[1]);
 }
 
-void Interpreter::op_gettick(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_gettick(unsigned flags, const uint16_t *params)
 {
 	// Params:
 	// 0: Destination, memory location

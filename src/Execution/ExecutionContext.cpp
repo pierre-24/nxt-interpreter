@@ -7,8 +7,6 @@
  *
  */
 
-#include <chrono>
-
 #include "ExecutionContext.h"
 
 #include "../Robot/NetworkInterface.h"
@@ -58,8 +56,6 @@ void ExecutionContext::load() noexcept(false)
 
 void ExecutionContext::reload()
 {
-	if (!this) return;
-	
 	delete interpreter;
 	delete system;
 	delete memory;
@@ -73,18 +69,7 @@ void ExecutionContext::reload()
 bool ExecutionContext::runForTime(float mintime) noexcept(false)
 {
 	if (isPaused) return true;
-	
-	unsigned long start = millisecondsSinceStart();
-	auto precise_start = std::chrono::high_resolution_clock::now();
-	
-	if (interpreter->waitingUntilTick() > start)
-		return true;
-
-	bool executable = true;
-	while ((float(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - precise_start).count())/1000000.0f) < mintime && executable)
-	    executable = interpreter->step();
-
-    return executable;
+    return interpreter->runForTime(mintime);
 }
 
 void ExecutionContext::setIsPaused(bool pause) throw()

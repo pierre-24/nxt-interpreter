@@ -7,6 +7,7 @@
  *
  */
 
+#include "InterpreterThread.h"
 #include "Interpreter.h"
 
 #include <iostream>
@@ -14,7 +15,7 @@
 #include "../Execution/RXEFile.h"
 #include "../System/VMMemory.h"
 
-void Interpreter::op_jmp(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_jmp(unsigned flags, const uint16_t *params)
 {
 	// Parameters:
 	// 0: offset (immediate, signed): Alter PC by this much.
@@ -24,7 +25,7 @@ void Interpreter::op_jmp(unsigned flags, const uint16_t *params)
 	// Account for size of jmp instruction, as otherwise we will go right past it.
 }
 
-void Interpreter::op_brcmp(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_brcmp(unsigned flags, const uint16_t *params)
 {
 	// Parameters:
 	// 0: offset (immediate, signed): Alter PC by this much if comparison is true
@@ -41,7 +42,7 @@ void Interpreter::op_brcmp(unsigned flags, const uint16_t *params)
 	}
 }
 
-void Interpreter::op_brtst(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_brtst(unsigned flags, const uint16_t *params)
 {
 	// Parameters:
 	// 0: offset (immediate, signed): Alter PC by this much if comparison is true
@@ -56,44 +57,44 @@ void Interpreter::op_brtst(unsigned flags, const uint16_t *params)
 	}
 }
 
-void Interpreter::op_stop(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_stop(unsigned flags, const uint16_t *params)
 {
 	throw std::runtime_error("op_stop");
 }
 
-void Interpreter::op_finclump(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_finclump(unsigned flags, const uint16_t *params)
 {
     // parameters:
-    // 0: start, immediate.
-    // 1: end, immediate.
+    // 0: start, immediate. First clump to schedule
+    // 1: end, immediate. Last clump to schedule
 
-    instruction = this->file->getCodeWordCount() + 1;
+    isTerminated = true;
 
     if(params[0] != 0xffff) {
-        std::cout << "op_finclump would schedule clumps " << params[0] << " to " << params[1] << std::endl;
-    } // TODO: schedule other clumps ?
+        interpreter->scheduleDependantClumps(currentClump, params[0], params[1]);
+    }
 }
 
-void Interpreter::op_finclumpimmed(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_finclumpimmed(unsigned flags, const uint16_t *params)
 {
     // parameters:
-    // 0: clumpId, immediate. Clump to schedule (?)
+    // 0: clumpId, immediate. Clump to schedule
 
-    currentClump = params[0];
-    instruction = file->getCodeStartForClump(currentClump); // TODO: schedule ?
+    isTerminated = true;
+    interpreter->scheduleClump(params[0]);
 }
 
-void Interpreter::op_acquire(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_acquire(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored acquire" << std::endl;
 }
 
-void Interpreter::op_release(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_release(unsigned flags, const uint16_t *params)
 {
 	std::cout << "ignored release" << std::endl;
 }
 
-void Interpreter::op_subcall(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_subcall(unsigned flags, const uint16_t *params)
 {
 	// Parameters:
 	// 0: Subroutine, immediate. Clump to branch to.
@@ -109,7 +110,7 @@ void Interpreter::op_subcall(unsigned flags, const uint16_t *params)
 	instruction = file->getCodeStartForClump(currentClump);
 }
 
-void Interpreter::op_subret(unsigned flags, const uint16_t *params)
+void InterpreterThread::op_subret(unsigned flags, const uint16_t *params)
 {
 	// Parameters:
 	// 0: CallerID, memory. Jump back to clump with this ID.

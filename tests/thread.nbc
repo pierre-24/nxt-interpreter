@@ -1,0 +1,26 @@
+dseg segment
+Repeat1Count byte 4
+Repeat2Count byte 10
+Power byte
+dseg ends
+
+thread main
+    precedes t1, t2 // start threads t1 and t2
+endt
+
+thread t1
+loop1:
+    sub Repeat1Count, Repeat1Count, 1
+    add Power, Repeat2Count, 0
+    mul Power, Power, 10
+    OnFwd(OUT_AB, Power)
+    wait 50
+    brtst GT, loop1, Repeat1Count // loop (`jmp loop1`) unless Repeat1Count is 0
+endt
+
+thread t2
+loop2:
+    sub Repeat2Count, Repeat2Count, 1
+    wait 20
+    brtst GT, loop2, Repeat2Count // loop (`jmp loop2`) unless Repeat2Count is 0
+endt
