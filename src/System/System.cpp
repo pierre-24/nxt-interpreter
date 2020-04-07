@@ -88,7 +88,7 @@ int System::LSWrite(int port, const uint8_t *buffer, int bufferLength, int bytes
 	return 0;
 }
 
-bool System::sanitizeSoundFilename(unsigned dstocEntry, char *bufferOut)
+bool System::sanitizeFilename(unsigned dstocEntry, char *bufferOut)
 {
 	unsigned length = memory->getArrayLength(dstocEntry);
 	
@@ -106,14 +106,10 @@ bool System::sanitizeSoundFilename(unsigned dstocEntry, char *bufferOut)
 		else
 			bufferOut[i] = character;
 	}
-	
-	// Change file ending
-	bufferOut[length - 4] = 'w';
-	bufferOut[length - 3] = 'a';
-	bufferOut[length - 2] = 'v';
-	
+
 	bufferOut[length - 1] = 0;
-	
+	bufferOut[length - 5] = '.'; // force filename.ext
+
 	return true;
 }
 
@@ -134,7 +130,7 @@ void System::syscall(unsigned callID, unsigned params)
 			// 4: Loop
 			// 5: Volume
 			char filename[20];
-			if (sanitizeSoundFilename(params+2, filename))
+			if (sanitizeFilename(params + 2, filename))
 				networkInterface->playFile(filename, memory->getScalarValue(params+4), float(memory->getScalarValue(params+5))*0.25f);
 			break;
 		}

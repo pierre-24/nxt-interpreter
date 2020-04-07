@@ -32,7 +32,7 @@ class System
 	int LSWrite(int port, const uint8_t *buffer, int bufferLength, int bytesExpectedBack);
 	
 	// Sound support: Makes sure no invalid filenames get used.
-	bool sanitizeSoundFilename(unsigned dstocEntry, char *bufferOut);
+	bool sanitizeFilename(unsigned dstocEntry, char *bufferOut);
 	
 public:
 	System(VMMemory *someMemory) : networkInterface(nullptr), memory(someMemory) { startTimeCount(); }

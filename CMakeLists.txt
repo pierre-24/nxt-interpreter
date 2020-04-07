@@ -11,9 +11,11 @@ add_executable(nxt_interpreter
         # execution context
         src/Execution/ExecutionContext.cpp
         src/Execution/RXEFile.cpp
-        # virtual memory and system
+        # system
         src/System/VMMemory.cpp
         src/System/System.cpp
+        src/System/VFileSystem.cpp
+        src/System/VFile.cpp
         # robot stuffs
         src/Robot/Motor.cpp
         src/Robot/Robot.cpp
