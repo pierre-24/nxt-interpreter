@@ -14,8 +14,8 @@
 #include "../System/VMMemory.h"
 #include "Interpreter.h"
 
-InterpreterThread::InterpreterThread(const  unsigned startClump, Interpreter* anIntepreter, const RXEFile *aFile, VMMemory *aMemory, System *aSystem)
-: file(aFile), memory(aMemory), system(aSystem), interpreter(anIntepreter)
+InterpreterThread::InterpreterThread(const  unsigned startClump, Interpreter* anIntepreter, const RXEFile *aFile, System *aSystem)
+: file(aFile), memory(aSystem->getMemory()), system(aSystem), interpreter(anIntepreter)
 {
     currentClump = startClump;
 	instruction = file->getCodeStartForClump(currentClump);

@@ -20,14 +20,12 @@ class ExecutionContext
 {
 private:
 	std::string filename;
-	
+
 	RXEFile *file;
-	VMMemory *memory;
 	System *system;
 	Interpreter *interpreter;
-
 	NetworkInterface *networkInterface;
-	
+
 	bool isPaused;
 	
 	void load() noexcept(false);

@@ -17,6 +17,16 @@
 #include "../Robot/NetworkInterface.h"
 #include "../utils/Time.h"
 #include "VMMemory.h"
+#include "VFileSystem.h"
+#include "../Execution/RXEFile.h"
+
+System::System(const RXEFile* f) {
+    memory = new VMMemory(f);
+    fileSystem = new VFileSystem();
+
+    for(auto & fileHandler : fileHandlers)
+        fileHandler = nullptr;
+}
 
 const char *System::nameForInputPartID(unsigned ID)
 {

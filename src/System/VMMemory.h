@@ -67,7 +67,6 @@ public:
 	/*!
 	 * @methodgroup Creating and destroying
 	 */
-	
 	/*!
 	 * @abstract Constructs a memory object
 	 * @param file The RXE file to base this memory on. The file is used for the
@@ -75,7 +74,7 @@ public:
 	 * for the entire time the memory does. The memory does not take ownership
 	 * of the file, you have to delete it yourself after destroying the memory.
 	 */
-	VMMemory(const RXEFile *file);
+    VMMemory(const RXEFile *file);
 	
 	/*!
 	 * @abstract Destructor

@@ -9,7 +9,7 @@
 #include "../System/System.h"
 #include "../Execution/RXEFile.h"
 
-Interpreter::Interpreter(const RXEFile *aFile, VMMemory *aMemory, System *aSystem): file(aFile), memory(aMemory), system(aSystem)
+Interpreter::Interpreter(const RXEFile *aFile,System *aSystem): file(aFile), system(aSystem)
 {
     scheduleClump(0); // schedule clump 0
 }
@@ -47,7 +47,7 @@ bool Interpreter::runForTime(float mintime) noexcept(false) {
 }
 
 void Interpreter::scheduleClump(unsigned clump) {
-    threads.push_back(new InterpreterThread(clump, this, file, memory, system));
+    threads.push_back(new InterpreterThread(clump, this, file, system));
 }
 
 void Interpreter::scheduleDependantClumps(unsigned clump, unsigned start, unsigned end) {

@@ -33,7 +33,9 @@ I dropped:
 
 ... And I added:
 
++ I implemented some of the few remaning opcodes.
 + A threading mechanism, so `op_finclump` really schedule other clumps (= threads).
++ A virtual file system.
 
 ## Note: the project structure
 
@@ -41,7 +43,7 @@ I did a bit of cleaning by giving a little bit of structure in the files of the 
 
 + [`src/Execution` folder](src/Execution): related to the execution of the RXE byte code, with the [context](src/Execution/ExecutionContext.h) which serve as the main interface to execute a code and the [`RXEFile`](src/Execution/RXEFile.h) object, which opens the binary file. 
 + [`src/Interpreter` folder](src/Interpreter): contains the bytecode [`Interpreter`](src/Interpreter/Interpreter.h) (which sets up the threading mechanism).
-+ [`src/System` folder](src/System): related to the virtual operating system of which the codes run. In particular, the [`VMMemory`](src/System/VMMemory.h) object (which manage the memory) and the [`System`](src/System/System.h) object (which handle *syscalls* and other system stuffs).
++ [`src/System` folder](src/System): related to the virtual operating system of which the codes run. In particular, the [`VMMemory`](src/System/VMMemory.h) object (which manage the memory), the [`VFileSystem`](src/System/VFileSystem.h) object (which implement a in memory virtual flat file system), and the [`System`](src/System/System.h) object (which handle *syscalls* and other system stuffs).
 + [`src/Robot` folder](src/Robot): related to the [robot](src/Robot/Robot.h) itself, and its [motor](src/Robot/Motor.h). Also contains the (in)famous [`NetworkInterface`](src/Robot/NetworkInterface.h) abstract object to communicate with it.
 + [`src/Environement/` folder](src/Environment): related to the robot environment in which it moves, corresponding to a kind of "map". In particular, it deals with the light sensor and the collisions.
 + [`src/utils` folder](src/utils): the traditional `utils` folder (here [time](src/utils/Time.h), [byte manipulations](src/utils/ByteOrder.h) and [vectors](src/utils/Vec4.h)).

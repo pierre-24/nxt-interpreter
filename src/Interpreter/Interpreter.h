@@ -17,7 +17,6 @@ class InterpreterThread;
  */
 class Interpreter {
     const RXEFile *file;
-    VMMemory *memory;
     System *system;
 
     std::list<InterpreterThread*> threads;
@@ -34,7 +33,7 @@ public:
      * same RXE file.
      * @param system The System interface used for IO and syscalls.
      */
-    Interpreter(const RXEFile *file, VMMemory *memory, System *system);
+    Interpreter(const RXEFile *file, System *system);
 
     /*!
 	 * @abstract Executes code for the specified number of seconds.

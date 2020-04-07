@@ -11,13 +11,12 @@
 
 #include "../Robot/NetworkInterface.h"
 #include "../Interpreter/Interpreter.h"
-#include "RXEFile.h"
 #include "../System/System.h"
 #include "../utils/Time.h"
-#include "../System/VMMemory.h"
+#include "RXEFile.h"
 
 ExecutionContext::ExecutionContext(const char *aFilename) noexcept(false)
-: filename(aFilename), file(nullptr), memory(nullptr), system(nullptr), interpreter(nullptr), networkInterface(nullptr)
+: filename(aFilename), file(nullptr), system(nullptr), interpreter(nullptr), networkInterface(nullptr)
 {
 	if (!aFilename) throw std::runtime_error("Filename is NULL");
 	
@@ -30,7 +29,6 @@ ExecutionContext::~ExecutionContext()
 {
 	delete interpreter;
 	delete system;
-	delete memory;
 	delete file;
 }
 
@@ -38,17 +36,15 @@ void ExecutionContext::load() noexcept(false)
 {
 	try {
 		file = new RXEFile(filename.c_str());
-		memory = new VMMemory(file);
-		system = new System(memory);
-		interpreter = new Interpreter(file, memory, system);
+		system = new System(file);
+		interpreter = new Interpreter(file, system);
 	}
 	catch (std::runtime_error& e)
 	{
 		delete interpreter;
 		delete system;
-		delete memory;
 		delete file;
-		
+
 		throw e;
 	}
 	
@@ -58,8 +54,6 @@ void ExecutionContext::reload()
 {
 	delete interpreter;
 	delete system;
-	delete memory;
-	delete file;
 	
 	load();
 	
