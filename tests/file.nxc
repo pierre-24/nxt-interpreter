@@ -1,6 +1,25 @@
 task main() {
     byte handle;
-    CreateFile("stuff.txt",24,handle);
-    WriteLn(handle, 1);
+    string s1 = "this", s2 = " and that", s3;
+    int s, fsize;
+
+    // write stuffs
+    CreateFile("stuff.txt", 24,handle);
+    s = StrLen(s1);
+    WriteBytes(handle, s1, s);
     CloseFile(handle);
+
+    OpenFileAppend("stuff.txt", fsize, handle);
+    WriteLn(handle, s2);
+    CloseFile(handle);
+
+    OpenFileRead("stuff.txt", fsize, handle);
+    ReadLn(handle, s3);
+    CloseFile(handle);
+
+    if (s3 == "this and that\n") {
+        CreateFile("stuff2.txt",24,handle);
+        WriteLn(handle, 42);
+        CloseFile(handle);
+    }
 }

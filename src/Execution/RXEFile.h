@@ -118,7 +118,7 @@ public:
 	
 	/*!
 	 * @abstract Constructs an RXE File object.
-	 * @filename The name of the file to open it from. The file contents are
+	 * @filename The name of the file to openFile it from. The file contents are
 	 * copied, it can be altered or deleted after this method returns.
 	 * @throws std::runtime_error if the file cannot be opened or is corrupt in
 	 * some way.

@@ -110,15 +110,8 @@ int main(int argc, char *argv[])
 	
 	// Print out dope vectors
 	std::cout << std::endl;
-	std::cout << "-- Dope Vectors --" << std::endl;
-	std::cout << "entry\toffset\tsize\tcount\tlink" << std::endl;
-	for (unsigned i = 0; i < memory->getArrayLength(0); i++)
-	{
-		std::cout << i << ":\t\t";
-//		std::cout << memory->getArrayLength(i) << "\t\t";
-		std::cout << std::endl;
-	}
-	
+	memory->dumpDopeVectors();
+
 	// Print out clump data
 	std::cout << std::endl;
 	std::cout << "-- Clump data --" << std::endl;

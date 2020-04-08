@@ -17,7 +17,7 @@
 RXEFile::RXEFile(const char *filename) throw(std::runtime_error)
 {
 	std::ifstream file(filename, std::ios::binary);
-	if (!file) throw std::runtime_error("Could not open RXE file.");
+	if (!file) throw std::runtime_error("Could not openFile RXE file.");
 	
 	// Read Header Data
 	char formatstring[16];

@@ -6,8 +6,8 @@
 #include <cstring>
 #include "VFile.h"
 
-VFile::VFile(): currentSize(0) {
-    content = new char[VFileConstant::Size];
+VFile::VFile(unsigned size): currentSize(size), nextWritePosition(0) {
+    content = new char[size];
 }
 
 VFile::~VFile() {
@@ -31,17 +31,18 @@ unsigned VFile::read(unsigned begin, unsigned length, char **data, unsigned &rea
 }
 
 unsigned VFile::write(unsigned position, const char *data, unsigned length, unsigned& writeLength) {
-    if (currentSize == VFileConstant::Size)
-        return VFileError::FileFull;
-
     if(position > currentSize)
-        position = currentSize;
+        return VFileError::GenericError;
 
-    if (position + length > VFileConstant::Size)
-        writeLength = VFileConstant::Size - position;
+    if (position + length > currentSize)
+        writeLength = currentSize - position;
 
     memcpy(content+position, data, writeLength);
-    currentSize += length;
+
+    if (position + writeLength > nextWritePosition)
+        nextWritePosition = position + writeLength;
 
     return (writeLength != length) ? VFileError::PartialWrite : VFileError::Success;
 }
+
+

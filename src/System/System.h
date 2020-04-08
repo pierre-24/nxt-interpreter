@@ -12,24 +12,19 @@
 
 class NetworkInterface;
 class VMMemory;
-class VFile;
 class VFileSystem;
 class RXEFile;
 
-namespace SystemConstant {
-    const unsigned maxFile = 16; // there is a limit of 16 opened file in the firmware
-}
 
 class System
 {
 	NetworkInterface *networkInterface;
 	VMMemory *memory;
 	VFileSystem* fileSystem;
+	const RXEFile* file;
 	
 	uint8_t lowspeedOutputBuffer[16];
 	int bytesReady;
-
-	VFile* fileHandlers[SystemConstant::maxFile];
 	
 	// Debug only
 	static const char *nameForInputPartID(unsigned ID);
@@ -43,6 +38,17 @@ class System
 	
 	// Sound support: Makes sure no invalid filenames get used.
 	bool sanitizeFilename(unsigned dstocEntry, char *bufferOut);
+
+	// file support
+	void FileOpenRead(unsigned param); // 0x00
+    void FileOpenWrite(unsigned param); // 0x01
+    void FileOpenAppend(unsigned param); // 0x02
+    void FileRead(unsigned param); // 0x03
+    void FileWrite(unsigned param); // 0x04
+    void FileClose(unsigned param); // 0x05
+    void FileResolveHandle(unsigned param); // 0x06
+    void FileRename(unsigned param); // 0x07
+    void FileDelete(unsigned param); // 0x08
 	
 public:
 	System(const RXEFile* file);

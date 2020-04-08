@@ -162,4 +162,6 @@ public:
 	 * @result The data of the array.
 	 */
 	void *getArrayData(unsigned dstocEntry);
+
+	void dumpDopeVectors();
 };

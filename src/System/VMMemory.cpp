@@ -10,6 +10,7 @@
 #include "VMMemory.h"
 
 #include <cstring>
+#include <iostream>
 
 #include "../utils/ByteOrder.h"
 #include "../Execution/RXEFile.h"
@@ -259,4 +260,15 @@ void *VMMemory::getArrayData(unsigned dstocEntry)
 	int32_t dopeVector = getScalarValue(dstocEntry);
 	
 	return arrays[dopeVector];
+}
+
+void VMMemory::dumpDopeVectors() {
+    std::cout << "-- Dope Vectors --" << std::endl;
+    std::cout << "entry\tsize\tcount" << std::endl;
+    for(unsigned i=0; i < dopeVectors[0].elementCount; i++) {
+        std::cout << i << ":"
+        << "\t\t"<< dopeVectors[i].elementSize
+        << "\t\t"<< dopeVectors[i].elementCount
+        << std::endl;
+    }
 }

@@ -20,12 +20,9 @@
 #include "VFileSystem.h"
 #include "../Execution/RXEFile.h"
 
-System::System(const RXEFile* f) {
+System::System(const RXEFile* f): networkInterface(nullptr), file(f) {
     memory = new VMMemory(f);
     fileSystem = new VFileSystem();
-
-    for(auto & fileHandler : fileHandlers)
-        fileHandler = nullptr;
 }
 
 const char *System::nameForInputPartID(unsigned ID)
@@ -130,6 +127,18 @@ void System::syscall(unsigned callID, unsigned params)
 	int returnValue = 0;
 	switch(callID)
 	{
+        case 0x00:
+            FileOpenRead(params);
+            break;
+	    case 0x01:
+	        FileOpenWrite(params);
+            break;
+        case 0x02:
+            FileOpenAppend(params);
+            break;
+        case 0x05:
+            FileClose(params);
+            break;
 		case 0x09: // NXTSoundPlayFile
 		{
 			// Params:
@@ -411,4 +420,116 @@ const char *System::nameForSyscall(unsigned ID)
 		case 0x2F: return "NXTListFiles";
 		default: return "Not_A_Valid_Syscall";
 	}
+}
+
+// file
+void System::FileOpenWrite(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (out)
+    // 3: File name, array (in)
+    // 4: array type, ubyte
+    // 5: Length, ulong (in)
+
+    char fileName[20];
+    if (!sanitizeFilename(param+3, fileName))
+        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+    else {
+        unsigned handle;
+        unsigned status;
+
+        fileSystem->FileOpenWrite(status, handle, fileName, memory->getScalarValue(param + 5));
+        memory->setScalarValue(param+1, status);
+        memory->setScalarValue(param+2, handle);
+    }
+}
+
+void System::FileClose(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (in)
+
+    unsigned status;
+    fileSystem->FileClose(status, memory->getScalarValue(param + 2));
+    memory->setScalarValue(param+1, status);
+}
+
+void System::FileOpenRead(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (out)
+    // 3: File name, array (in)
+    // 4: array type, ubyte
+    // 5: Length, ulong (in)
+
+
+    char fileName[20];
+    if (!sanitizeFilename(param+3, fileName))
+        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+    else {
+        unsigned handle;
+        unsigned status;
+
+        fileSystem->FileOpenRead(status, handle, fileName, memory->getScalarValue(param + 5));
+        memory->setScalarValue(param+1, status);
+        memory->setScalarValue(param+2, handle);
+    }
+}
+
+void System::FileOpenAppend(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (out)
+    // 3: File name, array (in)
+    // 4: array type, ubyte
+    // 5: Length, ulong (in)
+
+
+
+    char fileName[20];
+    if (!sanitizeFilename(param+3, fileName))
+        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+    else {
+        unsigned handle;
+        unsigned status;
+
+        fileSystem->FileOpenAppend(status, handle, fileName, memory->getScalarValue(param + 5));
+        memory->setScalarValue(param+1, status);
+        memory->setScalarValue(param+2, handle);
+    }
+
+}
+
+void System::FileRead(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (in)
+    // 3: Buffer, array (out)
+    // 4: array type, ubyte
+    // 5: Length, ulong (in)
+
+}
+
+void System::FileWrite(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (in)
+    // 3: Buffer, array (in)
+    // 4: array type, ubyte
+    // 5: Length, ulong (in)
+
+}
+
+void System::FileResolveHandle(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File handle, ubyte (out)
+    // 3: write ?, ubyte (out)
+    // 4, File name, array (in)
+
+}
+
+void System::FileRename(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: Old filename, array (in)
+    // 3: array type, ubyte
+    // 4: New filename, array (in)
+}
+
+void System::FileDelete(unsigned param) {
+    // 1: Return value, uword (out)
+    // 2: File name, array (in)
 }
