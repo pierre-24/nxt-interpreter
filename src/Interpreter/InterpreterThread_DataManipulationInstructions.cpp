@@ -7,6 +7,8 @@
  *
  */
 
+#include <cstring>
+
 #include "InterpreterThread.h"
 
 #include <iostream>
@@ -136,7 +138,33 @@ void InterpreterThread::op_stringtonum(unsigned flags, const uint16_t *params)
 
 void InterpreterThread::op_strcat(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored strcat" << std::endl;
+    // 0: InstrSize (immediate)
+    // 1: destination
+    // 2...n: source(s), array
+
+    unsigned size = params[0] / 2 - 3; // sizeof(opcode) + sizeof(instrsize) + sizeof(dest) = 3*2 bytes, so the pairs of byte left are for the destination(s)
+    unsigned dest = params[1];
+
+    unsigned buffsize = 0;
+    for(unsigned i=0; i < size; i++) {
+        if (memory->getArrayLength(params[2 + i]) > 0)
+            buffsize += memory->getArrayLength(params[2 + i]) - 1; // remove '\0'
+    }
+
+    buffsize += 1; // add '\0'
+    memory->setArrayLength(dest, buffsize);
+    unsigned offset = 0;
+
+    for(unsigned i=0; i < size; i++) {
+        if(memory->getArrayLength(params[2 + i]) > 0) {
+            for (unsigned j = 0; j < memory->getArrayLength(params[2 + i]) - 1; j++) {
+                memory->setArrayElement(dest, offset, memory->getArrayElement(params[i + 2], j));
+                offset++;
+            }
+        }
+    }
+
+    memory->setArrayElement(dest, offset, '\0'); // put '\0'
 }
 
 void InterpreterThread::op_strsubset(unsigned flags, const uint16_t *params)
