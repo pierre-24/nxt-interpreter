@@ -16,6 +16,7 @@ add_executable(nxt_interpreter
         src/System/System.cpp
         src/System/VFileSystem.cpp
         src/System/VFile.cpp
+        src/System/Syscall.cpp
         # robot stuffs
         src/Robot/Motor.cpp
         src/Robot/Robot.cpp
@@ -41,4 +42,6 @@ add_executable(rxe_analyser
         # virtual memory
         src/System/VMMemory.cpp
         # opcode name
-        src/Interpreter/OpcodeName.cpp)
+        src/Interpreter/OpcodeName.cpp
+        # syscall name
+        src/System/Syscall.cpp)

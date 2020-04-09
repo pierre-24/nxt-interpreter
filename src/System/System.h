@@ -29,7 +29,6 @@ class System
 	// Debug only
 	static const char *nameForInputPartID(unsigned ID);
 	static const char *nameForOutputPartID(unsigned ID);
-	static const char *nameForSyscall(unsigned ID);
 	
 	// Communication (mainly with ultrasound sensor)
 	int CheckLSStatus(int port, int &bytesReady);

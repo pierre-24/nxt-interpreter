@@ -139,8 +139,8 @@ void InterpreterThread::op_stringtonum(unsigned flags, const uint16_t *params)
 void InterpreterThread::op_strcat(unsigned flags, const uint16_t *params)
 {
     // 0: InstrSize (immediate)
-    // 1: destination
-    // 2...n: source(s), array
+    // 1: destination (memory location)
+    // 2...n: source(s), array (memory location)
 
     unsigned size = params[0] / 2 - 3; // sizeof(opcode) + sizeof(instrsize) + sizeof(dest) = 3*2 bytes, so the pairs of byte left are for the destination(s)
     unsigned dest = params[1];
@@ -174,11 +174,27 @@ void InterpreterThread::op_strsubset(unsigned flags, const uint16_t *params)
 
 void InterpreterThread::op_strtobytearr(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored strtobytearr" << std::endl;
+	// 0: destination (memory location)
+	// 1: source (memory location)
+
+	unsigned length = memory->getArrayLength(params[1]) - 1;
+	memory->setArrayLength(params[0], length);
+
+    for (int i = 0; i < length; ++i)
+        memory->setArrayElement(params[0], i, memory->getArrayElement(params[1], i));
 }
 
 void InterpreterThread::op_bytearrtostr(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored bytearrtostr" << std::endl;
+    // 0: destination (memory location)
+    // 1: source (memory location)
+
+    unsigned length = memory->getArrayLength(params[1]) + 1;
+    memory->setArrayLength(params[0], length);
+
+    for (int i = 0; i < length - 1; ++i)
+        memory->setArrayElement(params[0], i, memory->getArrayElement(params[1], i));
+
+    memory->setArrayElement(params[0], length-1, '\0');
 }
 

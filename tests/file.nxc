@@ -1,9 +1,11 @@
 task main() {
     byte handle;
-    string s1 = "this", s2 = " and that", s3, sx;
+    string s1 = "this", s2 = " and that", s3, sx, sxb;
     int s, fsize, sr;
 
-    sx = StrCat(s1, s2, "\n");
+    sx = StrCat(s1, s2);
+    StrToByteArray(sx, sxb);
+    sr = StrLen(sx);
 
     // write stuffs
     CreateFile("stuff.txt", 24,handle);
@@ -20,7 +22,7 @@ task main() {
     ReadBytes(handle, sr, s3);
     CloseFile(handle);
 
-    if (s3 == sx) {
+    if (s3 == sxb) {
         CreateFile("stuff2.txt",24,handle);
         WriteLn(handle, 42);
         CloseFile(handle);

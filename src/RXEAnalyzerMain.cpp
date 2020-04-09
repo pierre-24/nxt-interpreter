@@ -12,6 +12,7 @@
 #include "Execution/RXEFile.h"
 #include "System/VMMemory.h"
 #include "Interpreter/OpcodeName.h"
+#include "System/Syscall.h"
 
 void printUsageAndExit(const std::string& pname)
 {
@@ -216,8 +217,12 @@ int main(int argc, char *argv[])
 			if (size == 0xE) size = code[codeWord+1];
 			size /= 2;
 			
-			for (unsigned i = 1; i < size; i++)
-				printArgument(code[codeWord+i], file, (i == 1 && (isImmediate & ImmFirst)) || (i == (size-1) && (isImmediate & ImmLast)));
+			for (unsigned i = 1; i < size; i++) {
+                printArgument(code[codeWord + i], file,
+                              (i == 1 && (isImmediate & ImmFirst)) || (i == (size - 1) && (isImmediate & ImmLast)));
+                if (i == 1 && opcode == 0x28)
+                    std::cout << "(" << nameForSyscall(code[codeWord +  i]) << ") ";
+            }
 			
 			codeWord += size;
 		}

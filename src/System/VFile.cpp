@@ -4,6 +4,7 @@
 
 #include <string>
 #include <cstring>
+#include <iostream>
 #include "VFile.h"
 
 VFile::VFile(unsigned size): currentSize(size), nextWritePosition(0) {
@@ -14,8 +15,7 @@ VFile::~VFile() {
     delete content;
 }
 
-unsigned VFile::read(unsigned begin, unsigned length, char **data, unsigned &readLength) const {
-    readLength = 0;
+unsigned VFile::read(unsigned begin, unsigned length, char *data, unsigned &readLength) const {
     if (begin > currentSize)
         return VFileError::GenericError;
 
@@ -24,10 +24,9 @@ unsigned VFile::read(unsigned begin, unsigned length, char **data, unsigned &rea
     else
         readLength = length;
 
-    *data = new char[readLength];
-    memcpy(*data, content+begin, readLength);
+    memcpy(data, content+begin, readLength);
 
-    return VFileError::Success;
+    return (readLength == length) ? VFileError::Success : VFileError::_EOF;
 }
 
 unsigned VFile::write(unsigned position, const char *data, unsigned length, unsigned& writeLength) {
@@ -36,10 +35,12 @@ unsigned VFile::write(unsigned position, const char *data, unsigned length, unsi
 
     if (position + length > currentSize)
         writeLength = currentSize - position;
+    else
+        writeLength = length;
 
     memcpy(content+position, data, writeLength);
 
-    if (position + writeLength > nextWritePosition)
+    if ((position + writeLength) > nextWritePosition)
         nextWritePosition = position + writeLength;
 
     return (writeLength != length) ? VFileError::PartialWrite : VFileError::Success;

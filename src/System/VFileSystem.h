@@ -20,7 +20,7 @@ namespace VFileSystemConstant {
     const unsigned maxFile = 15; // there is a limit of 16 opened file in the firmware
 }
 
-struct FileHandler;
+struct FileHandle;
 
 /*!
  * @abstract Create a virtual file system
@@ -30,7 +30,7 @@ class VFileSystem {
     std::map<std::string, VFile*> files;
     std::map<std::string, unsigned> openedHandles;
 
-    FileHandler* fileHandlers[VFileSystemConstant::maxFile];
+    FileHandle* fileHandles[VFileSystemConstant::maxFile];
 
     unsigned createFile(const std::string &name, unsigned size);
     unsigned renameFile(const std::string& previous, const std::string& current);
@@ -38,6 +38,7 @@ class VFileSystem {
     bool fileExists(const std::string& name);
 
     VFile* getFile(const std::string& name) noexcept(false);
+    FileHandle * getFileHandle(unsigned handle) noexcept(false);
 
     unsigned openFile(const std::string &name, unsigned mode, unsigned &handle);
     unsigned closeFile(unsigned handle);
@@ -49,6 +50,9 @@ public:
     void FileOpenRead(unsigned& status, unsigned& handle, const char* name, unsigned length);
     void FileOpenWrite(unsigned& status, unsigned& handle, const char* name, unsigned length);
     void FileOpenAppend(unsigned& status, unsigned& handle, const char* name, unsigned length);
+
+    void FileRead(unsigned& status, unsigned handle, char* buff, unsigned &length);
+    void FileWrite(unsigned& status, unsigned handle, const char* buff, unsigned &length);
 
     // TODO: allow handler 0 (= standard output) only for write !
 

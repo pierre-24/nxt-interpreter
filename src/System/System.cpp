@@ -20,6 +20,9 @@
 #include "VFileSystem.h"
 #include "../Execution/RXEFile.h"
 
+#include "Syscall.h"
+#include "VFile.h"
+
 System::System(const RXEFile* f): networkInterface(nullptr), file(f) {
     memory = new VMMemory(f);
     fileSystem = new VFileSystem();
@@ -135,6 +138,12 @@ void System::syscall(unsigned callID, unsigned params)
             break;
         case 0x02:
             FileOpenAppend(params);
+            break;
+        case 0x03:
+            FileRead(params);
+            break;
+        case 0x04:
+            FileWrite(params);
             break;
         case 0x05:
             FileClose(params);
@@ -367,61 +376,6 @@ unsigned System::getTick()
 	return millisecondsSinceStart();
 }
 
-const char *System::nameForSyscall(unsigned ID)
-{
-	switch (ID)
-	{
-		case 0x00: return "NXTFileOpenRead";
-		case 0x01: return "NXTFileOpenWrite";
-		case 0x02: return "NXTFileOpenAppend";
-		case 0x03: return "NXTFileRead";
-		case 0x04: return "NXTFileWrite";
-		case 0x05: return "NXTFileClose";
-		case 0x06: return "NXTFileResolveHandle";
-		case 0x07: return "NXTFileRename";
-		case 0x08: return "NXTFileDelete";
-		case 0x09: return "NXTSoundPlayFile";
-		case 0x0A: return "NXTSoundPlayTone";
-		case 0x0B: return "NXTSoundGetState";
-		case 0x0C: return "NXTSoundSetState";
-		case 0x0D: return "NXTDrawText";
-		case 0x0E: return "NXTDrawPoint";
-		case 0x0F: return "NXTDrawLine";
-		case 0x10: return "NXTDrawCircle";
-		case 0x11: return "NXTDrawRect";
-		case 0x12: return "NXTDrawPicture";
-		case 0x13: return "NXTSetScreenMode";
-		case 0x14: return "NXTReadButton";
-		case 0x15: return "NXTCommLSWrite";
-		case 0x16: return "NXTCommLSRead";
-		case 0x17: return "NXTCommLSCheckStatus";
-		case 0x18: return "NXTRandomNumber";
-		case 0x19: return "NXTGetStartTick";
-		case 0x1A: return "NXTMessageWrite";
-		case 0x1B: return "NXTMessageRead";
-		case 0x1C: return "NXTCommBTCheckStatus";
-		case 0x1D: return "NXTCommBTWrite";
-		case 0x1F: return "NXTKeepAlive";
-		case 0x20: return "NXTIOMapRead";
-		case 0x21: return "NXTIOMapWrite";
-		case 0x22: return "NXTColorSensorRead";
-		case 0x23: return "NXTBTPower";
-		case 0x24: return "NXTBTConnection";
-		case 0x25: return "NXTCommHSWrite";
-		case 0x26: return "NXTCommHSRead";
-		case 0x27: return "NXTCommHSCheckStatus";
-		case 0x28: return "NXTReadmeSemData";
-		case 0x29: return "NXTWriteSemData";
-		case 0x2A: return "NXTComputeCalibValue";
-		case 0x2B: return "NXTUpdateCalibCacheData";
-		case 0x2C: return "NXTDatalogWrite";
-		case 0x2D: return "NXTDatalogGetTimes";
-		case 0x2E: return "NXTSetSleepTimeout";
-		case 0x2F: return "NXTListFiles";
-		default: return "Not_A_Valid_Syscall";
-	}
-}
-
 // file
 void System::FileOpenWrite(unsigned param) {
     // 1: Return value, uword (out)
@@ -480,8 +434,6 @@ void System::FileOpenAppend(unsigned param) {
     // 4: array type, ubyte
     // 5: Length, ulong (in)
 
-
-
     char fileName[20];
     if (!sanitizeFilename(param+3, fileName))
         memory->setScalarValue(param+1, VFileError::IllegalFileName);
@@ -501,8 +453,19 @@ void System::FileRead(unsigned param) {
     // 2: File handle, ubyte (in)
     // 3: Buffer, array (out)
     // 4: array type, ubyte
-    // 5: Length, ulong (in)
+    // 5: Length, ulong (inout)
 
+    unsigned status;
+    unsigned length = memory->getScalarValue(param + 5);
+    auto* buffer = new char[length];
+    fileSystem->FileRead(status, memory->getScalarValue(param + 2), buffer, length);
+
+    memory->setArrayLength(param + 3, length + 1);
+    for (int i = 0; i < length; ++i)
+        memory->setArrayElement(param + 3, i, buffer[i]);
+
+    memory->setArrayElement(param+ 3, length, '\0'); // set '\0'
+    delete[] buffer;
 }
 
 void System::FileWrite(unsigned param) {
@@ -512,6 +475,16 @@ void System::FileWrite(unsigned param) {
     // 4: array type, ubyte
     // 5: Length, ulong (in)
 
+    unsigned status = VFileError::Success;
+    unsigned length = memory->getScalarValue(param + 5);
+
+    if(length > 0) {
+        length--;
+        fileSystem->FileWrite(status, memory->getScalarValue(param + 2), reinterpret_cast<char*>(memory->getArrayData(param + 3)), length);
+    }
+
+    memory->setScalarValue(param + 1, status);
+    memory->setScalarValue(param + 5, length);
 }
 
 void System::FileResolveHandle(unsigned param) {
@@ -519,7 +492,6 @@ void System::FileResolveHandle(unsigned param) {
     // 2: File handle, ubyte (out)
     // 3: write ?, ubyte (out)
     // 4, File name, array (in)
-
 }
 
 void System::FileRename(unsigned param) {

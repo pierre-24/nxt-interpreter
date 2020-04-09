@@ -84,10 +84,10 @@ class InterpreterThread
 	void op_unflatten(unsigned flags, const uint16_t *params); // not implemented
 	void op_numtostring(unsigned flags, const uint16_t *params); // not implemented
 	void op_stringtonum(unsigned flags, const uint16_t *params); // not implemented
-	void op_strcat(unsigned flags, const uint16_t *params); // not implemented
+	void op_strcat(unsigned flags, const uint16_t *params);
 	void op_strsubset(unsigned flags, const uint16_t *params); // not implemented
-	void op_strtobytearr(unsigned flags, const uint16_t *params); // not implemented
-	void op_bytearrtostr(unsigned flags, const uint16_t *params); // not implemented
+	void op_strtobytearr(unsigned flags, const uint16_t *params);
+	void op_bytearrtostr(unsigned flags, const uint16_t *params);
 	
 	// Control flow Instructions
 	void op_jmp(unsigned flags, const uint16_t *params);

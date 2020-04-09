@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-struct FileHandler {
+struct FileHandle {
     VFile* file;
     unsigned flags;
     unsigned cursor;
@@ -22,15 +22,15 @@ namespace FileHandlerConstants {
 
 
 VFileSystem::VFileSystem() {
-    for(auto & fileHandler : fileHandlers)
-        fileHandler = nullptr;
+    for(auto & fileHandle : fileHandles)
+        fileHandle = nullptr;
 }
 
 VFileSystem::~VFileSystem() {
     for (auto& p: files)
         delete p.second;
 
-    for(auto & fileHandler : fileHandlers)
+    for(auto & fileHandler : fileHandles)
         delete fileHandler;
 }
 
@@ -80,6 +80,16 @@ VFile *VFileSystem::getFile(const std::string &name) noexcept(false) {
         return (*it).second;
 }
 
+FileHandle * VFileSystem::getFileHandle(unsigned handle) noexcept(false) {
+    if (handle > VFileSystemConstant::maxFile)
+        throw std::runtime_error("file not found");
+
+    if(fileHandles[handle - 1] == nullptr)
+        throw std::runtime_error("file not found");
+    else
+        return fileHandles[handle - 1];
+}
+
 unsigned VFileSystem::openFile(const std::string &name, unsigned mode, unsigned &handle) {
     handle = VFileSystemConstant::maxFile;
     VFile *f = nullptr;
@@ -94,7 +104,7 @@ unsigned VFileSystem::openFile(const std::string &name, unsigned mode, unsigned 
         return VFileError::FileBusy;
 
     for(int i=0; i < VFileSystemConstant::maxFile; i++) {
-        if(fileHandlers[i] == nullptr) { // get the next available handler
+        if(fileHandles[i] == nullptr) { // get the next available handler
             unsigned cursor = 0;
 
             if (mode & FileHandlerConstants::OpenAppend) {
@@ -104,11 +114,11 @@ unsigned VFileSystem::openFile(const std::string &name, unsigned mode, unsigned 
                 cursor = f->getNextWritePosition();
             }
 
-            auto* fileHandler = new FileHandler;
-            fileHandler->file = f;
-            fileHandler->flags = mode;
-            fileHandler->cursor = cursor;
-            fileHandlers[i] = fileHandler;
+            auto* fileHandle = new FileHandle;
+            fileHandle->file = f;
+            fileHandle->flags = mode;
+            fileHandle->cursor = cursor;
+            fileHandles[i] = fileHandle;
             handle = i + 1;
             openedHandles.insert({std::string(name), handle});
             break;
@@ -119,15 +129,23 @@ unsigned VFileSystem::openFile(const std::string &name, unsigned mode, unsigned 
 }
 
 unsigned VFileSystem::closeFile(unsigned handle) {
-    handle -= 1;
-    if (handle >= VFileSystemConstant::maxFile)
+    try {
+        auto* fhandle = getFileHandle(handle);
+        delete(fhandle);
+    } catch (std::runtime_error& e) {
         return VFileError::IllegalHandle;
+    }
 
-    if(fileHandlers[handle] == nullptr)
-        return VFileError::IllegalHandle;
+    fileHandles[handle - 1] = nullptr;
 
-    delete(fileHandlers[handle]);
-    fileHandlers[handle] = nullptr;
+    auto it = openedHandles.begin();
+
+    for(;it != openedHandles.end(); it++) {
+        if ((*it).second == handle) {
+            openedHandles.erase(it);
+            break;
+        }
+    }
 
     return VFileError::Success;
 }
@@ -139,17 +157,33 @@ void VFileSystem::FileOpenWrite(unsigned &status, unsigned &handle, const char *
 }
 
 void VFileSystem::FileOpenRead(unsigned &status, unsigned &handle, const char *name, unsigned length) {
-    status = createFile(name, length);
-    if (status == VFileError::Success)
-        status = openFile(name, FileHandlerConstants::OpenRead, handle);
+    status = openFile(name, FileHandlerConstants::OpenRead, handle);
 }
 
 void VFileSystem::FileOpenAppend(unsigned &status, unsigned &handle, const char *name, unsigned length) {
-    status = createFile(name, length);
-    if (status == VFileError::Success)
-        status = openFile(name, FileHandlerConstants::OpenWrite | FileHandlerConstants::OpenAppend, handle);
+    status = openFile(name, FileHandlerConstants::OpenWrite | FileHandlerConstants::OpenAppend, handle);
 }
 
 void VFileSystem::FileClose(unsigned &status, unsigned handle) {
     status = closeFile(handle);
+}
+
+void VFileSystem::FileRead(unsigned &status, unsigned handle, char *buff, unsigned &length) {
+    try {
+        auto fhandle = getFileHandle(handle);
+        status = fhandle->file->read(fhandle->cursor, length, buff, length);
+        fhandle->cursor += length;
+    } catch (std::runtime_error & e) {
+        status = VFileError::IllegalHandle;
+    }
+}
+
+void VFileSystem::FileWrite(unsigned &status, unsigned handle, const char *buff, unsigned &length) {
+    try {
+        auto fhandle = getFileHandle(handle);
+        status = fhandle->file->write(fhandle->cursor, buff, length, length);
+        fhandle->cursor += length;
+    } catch (std::runtime_error & e) {
+        status = VFileError::IllegalHandle;
+    }
 }
