@@ -131,25 +131,31 @@ void System::syscall(unsigned callID, unsigned params)
 	switch(callID)
 	{
         case 0x00:
-            FileOpenRead(params);
+            returnValue = FileOpenRead(params);
             break;
 	    case 0x01:
-	        FileOpenWrite(params);
+            returnValue = FileOpenWrite(params);
             break;
         case 0x02:
-            FileOpenAppend(params);
+            returnValue = FileOpenAppend(params);
             break;
         case 0x03:
-            FileRead(params);
+            returnValue = FileRead(params);
             break;
         case 0x04:
-            FileWrite(params);
+            returnValue = FileWrite(params);
             break;
         case 0x05:
-            FileClose(params);
+            returnValue = FileClose(params);
             break;
         case 0x06:
-            FileResolveHandle(params);
+            returnValue = FileResolveHandle(params);
+            break;
+        case 0x07:
+            returnValue = FileRename(params);
+            break;
+        case 0x08:
+            returnValue = FileDelete(params);
             break;
 		case 0x09: // NXTSoundPlayFile
 		{
@@ -380,7 +386,7 @@ unsigned System::getTick()
 }
 
 // file
-void System::FileOpenWrite(unsigned param) {
+unsigned int System::FileOpenWrite(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (out)
     // 3: File name, array (in)
@@ -389,27 +395,27 @@ void System::FileOpenWrite(unsigned param) {
 
     char fileName[20];
     if (!sanitizeFilename(param+3, fileName))
-        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+        return VFileError::IllegalFileName;
     else {
         unsigned handle;
         unsigned status;
 
         fileSystem->FileOpenWrite(status, handle, fileName, memory->getScalarValue(param + 5));
-        memory->setScalarValue(param+1, status);
         memory->setScalarValue(param+2, handle);
+        return status;
     }
 }
 
-void System::FileClose(unsigned param) {
+unsigned int System::FileClose(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (in)
 
     unsigned status;
     fileSystem->FileClose(status, memory->getScalarValue(param + 2));
-    memory->setScalarValue(param+1, status);
+    return status;
 }
 
-void System::FileOpenRead(unsigned param) {
+unsigned int System::FileOpenRead(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (out)
     // 3: File name, array (in)
@@ -419,18 +425,18 @@ void System::FileOpenRead(unsigned param) {
 
     char fileName[20];
     if (!sanitizeFilename(param+3, fileName))
-        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+        return VFileError::IllegalFileName;
     else {
         unsigned handle;
         unsigned status;
 
         fileSystem->FileOpenRead(status, handle, fileName, memory->getScalarValue(param + 5));
-        memory->setScalarValue(param+1, status);
         memory->setScalarValue(param+2, handle);
+        return status;
     }
 }
 
-void System::FileOpenAppend(unsigned param) {
+unsigned int System::FileOpenAppend(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (out)
     // 3: File name, array (in)
@@ -439,19 +445,19 @@ void System::FileOpenAppend(unsigned param) {
 
     char fileName[20];
     if (!sanitizeFilename(param+3, fileName))
-        memory->setScalarValue(param+1, VFileError::IllegalFileName);
+        return VFileError::IllegalFileName;
     else {
         unsigned handle;
         unsigned status;
 
         fileSystem->FileOpenAppend(status, handle, fileName, memory->getScalarValue(param + 5));
-        memory->setScalarValue(param+1, status);
         memory->setScalarValue(param+2, handle);
+        return status;
     }
 
 }
 
-void System::FileRead(unsigned param) {
+unsigned int System::FileRead(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (in)
     // 3: Buffer, array (out)
@@ -463,15 +469,19 @@ void System::FileRead(unsigned param) {
     auto* buffer = new char[length];
     fileSystem->FileRead(status, memory->getScalarValue(param + 2), buffer, length);
 
+    memory->setScalarValue(param + 5, length);
+
     memory->setArrayLength(param + 3, length + 1);
     for (int i = 0; i < length; ++i)
         memory->setArrayElement(param + 3, i, buffer[i]);
 
     memory->setArrayElement(param+ 3, length, '\0'); // set '\0'
     delete[] buffer;
+
+    return status;
 }
 
-void System::FileWrite(unsigned param) {
+unsigned int System::FileWrite(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (in)
     // 3: Buffer, array (in)
@@ -493,11 +503,11 @@ void System::FileWrite(unsigned param) {
         delete[] buffer;
     }
 
-    memory->setScalarValue(param + 1, status);
     memory->setScalarValue(param + 5, length);
+    return status;
 }
 
-void System::FileResolveHandle(unsigned param) {
+unsigned int System::FileResolveHandle(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File handle, ubyte (out)
     // 3: write ?, ubyte (out)
@@ -507,25 +517,27 @@ void System::FileResolveHandle(unsigned param) {
     bool write;
     fileSystem->FileResolveHandle(status, handle, write, reinterpret_cast<char*>(memory->getArrayData(param + 4)));
 
-    memory->setScalarValue(param + 1, status);
     memory->setScalarValue(param + 2, handle);
     memory->setScalarValue(param + 3, write);
+    return status;
 }
 
-void System::FileRename(unsigned param) {
+unsigned int System::FileRename(unsigned param) {
     // 1: Return value, uword (out)
     // 2: Old filename, array (in)
     // 3: array type, ubyte
     // 4: New filename, array (in)
 
-    // TODO: what if already opened?
-    std::cout << "NXTFileRename not implemented" << std::endl;
+    unsigned status;
+    fileSystem->FileRename(status, reinterpret_cast<char*>(memory->getArrayData(param + 2)), reinterpret_cast<char*>(memory->getArrayData(param + 4)));
+    return status;
 }
 
-void System::FileDelete(unsigned param) {
+unsigned int System::FileDelete(unsigned param) {
     // 1: Return value, uword (out)
     // 2: File name, array (in)
 
-    // TODO: what if already opened?
-    std::cout << "NXTFileDelete not implemented" << std::endl;
+    unsigned status;
+    fileSystem->FileDelete(status, reinterpret_cast<char*>(memory->getArrayData(param + 2)));
+    return status;
 }

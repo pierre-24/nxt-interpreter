@@ -2,10 +2,9 @@
 // Created by pierre on 07/04/2020.
 //
 
+#include <iostream>
 #include "VFileSystem.h"
 #include "VFile.h"
-
-#include <iostream>
 
 struct FileHandle {
     VFile* file;
@@ -197,4 +196,18 @@ void VFileSystem::FileResolveHandle(unsigned &status, unsigned &handle, bool &wr
         write = getFileHandle(handle)->flags & FileHandlerConstants::OpenWrite;
         status = VFileError::Success;
     }
+}
+
+void VFileSystem::FileRename(unsigned &status, const char *prev, const char *curr) {
+    if(openedHandles.count(std::string(prev)) > 0)
+        status = VFileError::FileBusy;
+    else
+        status = renameFile(std::string(prev), std::string(curr));
+}
+
+void VFileSystem::FileDelete(unsigned &status, const char *filename) {
+    if(openedHandles.count(std::string(filename)) > 0)
+        status = VFileError::FileBusy;
+    else
+        status = deleteFile(std::string(filename));
 }

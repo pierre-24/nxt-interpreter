@@ -129,6 +129,6 @@ void InterpreterThread::op_tst(unsigned flags, const uint16_t *params)
         } else
             memory->setScalarValue(params[0], aggregatedComparisonBetweenScalarValueAndAggregated(flags, 0, params[1], false));
 	} else {
-        std::cout << "op_test: non-aggregated comparison result not implemented" << std::endl;
+        std::cout << "op_tst: non-aggregated comparison result not implemented" << std::endl;
     }
 }

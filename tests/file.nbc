@@ -26,32 +26,18 @@ FileResolveHandleType struct
 	Filename byte[]
 FileResolveHandleType ends
 
-dseg ends
-
-/*dseg segment
-	FileResolveHandleType struct
-	Result word
-	FileHandle byte
-	WriteHandle byte
-	Filename byte[]
-	FileResolveHandleType ends
-dseg ends
-
-dseg segment
-	FileRenameType struct
+FileRenameType struct
 	Result word
 	OldFilename byte[]
 	NewFilename byte[]
 FileRenameType ends
 
-dseg ends
-
-dseg segment
-	FileDeleteType struct
+FileDeleteType struct
 	Result word
 	Filename byte[]
-	FileDeleteType ends
-dseg ends*/
+FileDeleteType ends
+
+dseg ends
 
 thread main
     dseg segment
@@ -59,6 +45,8 @@ thread main
         fileClose FileCloseType
         fileRW FileReadWriteType
         fileResolve FileResolveHandleType
+        fileRename FileRenameType
+        fileDel FileDeleteType
         totLen dword
         numStr byte[]
     dseg ends
@@ -67,6 +55,7 @@ thread main
     mov fileOpen.Filename, "test.txt"
     set fileOpen.Length, 50 // don't forget the size !
     syscall FileOpenWrite, fileOpen // open the file, can check `fileOpen.Result`
+    brtst NEQ, failedAtSomePoint, fileOpen.Result
 
     mov fileRW.FileHandle, fileOpen.FileHandle
     mov fileRW.Buffer, "this, " // put a string in the structure
@@ -88,6 +77,7 @@ skipSecondWrite:
 
     // 2. Append
     syscall FileOpenAppend, fileOpen // filename is already set up
+    brtst NEQ, failedAtSomePoint, fileOpen.Result
 
     mov fileRW.FileHandle, fileOpen.FileHandle
     mov fileRW.Buffer, "and that "
@@ -98,8 +88,15 @@ skipSecondWrite:
     mov fileClose.FileHandle, fileOpen.FileHandle
     syscall FileClose, fileClose // close file
 
-    // 3. Read
-    syscall FileOpenRead, fileOpen // filename is already set up
+    // 3. Rename
+    mov fileRename.OldFilename, fileOpen.Filename
+    mov fileRename.NewFilename, "test2.txt"
+    syscall FileRename, fileRename
+
+    // 4. Read
+    mov fileOpen.Filename, fileRename.NewFilename // if rename went ok, filename changed
+    syscall FileOpenRead, fileOpen
+    brtst NEQ, failedAtSomePoint, fileOpen.Result
 
     mov fileRW.FileHandle, fileOpen.FileHandle
     mov fileRW.Length, totLen // will read `totLen` bytes
@@ -108,11 +105,31 @@ skipSecondWrite:
     mov fileClose.FileHandle, fileOpen.FileHandle
     syscall FileClose, fileClose // close file
 
-    // 4. Dumps that in standard output
+    // 5. Dumps that in standard output
     set fileRW.FileHandle, 0 // special file handler
     syscall FileWrite, fileRW // write in standard output
 
     numtostr fileRW.Buffer, totLen // also output the size
+    strlen fileRW.Length, fileRW.Buffer
+    syscall FileWrite, fileRW
+
+    // 6. Remove
+    mov fileDel.Filename, fileOpen.Filename
+    syscall FileDelete, fileDel
+    brtst NEQ, failedAtSomePoint, fileDel.Result
+
+    syscall FileOpenRead, fileOpen // this time, that shouldn't work
+    brtst NEQ, tEnd, fileOpen.Result
+
+failedAtSomePoint:
+    set fileRW.FileHandle, 0
+    mov fileRW.Buffer, "this failed at some point"
+    strlen fileRW.Length, fileRW.Buffer
+    syscall FileWrite, fileRW
+
+tEnd:
+    set fileRW.FileHandle, 0
+    mov fileRW.Buffer, "\n"
     strlen fileRW.Length, fileRW.Buffer
     syscall FileWrite, fileRW
 

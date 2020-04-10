@@ -39,15 +39,15 @@ class System
 	bool sanitizeFilename(unsigned dstocEntry, char *bufferOut);
 
 	// file support
-	void FileOpenRead(unsigned param); // 0x00
-    void FileOpenWrite(unsigned param); // 0x01
-    void FileOpenAppend(unsigned param); // 0x02
-    void FileRead(unsigned param); // 0x03
-    void FileWrite(unsigned param); // 0x04
-    void FileClose(unsigned param); // 0x05
-    void FileResolveHandle(unsigned param); // 0x06
-    void FileRename(unsigned param); // 0x07
-    void FileDelete(unsigned param); // 0x08
+    unsigned int FileOpenRead(unsigned param); // 0x00
+    unsigned int FileOpenWrite(unsigned param); // 0x01
+    unsigned int FileOpenAppend(unsigned param); // 0x02
+    unsigned int FileRead(unsigned param); // 0x03
+    unsigned int FileWrite(unsigned param); // 0x04
+    unsigned int FileClose(unsigned param); // 0x05
+    unsigned int FileResolveHandle(unsigned param); // 0x06
+    unsigned int FileRename(unsigned param); // 0x07
+    unsigned int FileDelete(unsigned param); // 0x08
 	
 public:
 	System(const RXEFile* file);
