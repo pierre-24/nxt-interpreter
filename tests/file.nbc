@@ -1,54 +1,14 @@
-dseg segment
-
-FileOpenType struct
-	Result word
-	FileHandle byte
-	Filename byte[]
-	Length dword
-FileOpenType ends
-
-FileReadWriteType struct
-	Result word
-	FileHandle byte
-	Buffer byte[]
-	Length dword
-FileReadWriteType ends
-
-FileCloseType struct
-	Result word
-	FileHandle byte
-FileCloseType ends
-
-FileResolveHandleType struct
-	Result word
-	FileHandle byte
-	WriteHandle byte
-	Filename byte[]
-FileResolveHandleType ends
-
-FileRenameType struct
-	Result word
-	OldFilename byte[]
-	NewFilename byte[]
-FileRenameType ends
-
-FileDeleteType struct
-	Result word
-	Filename byte[]
-FileDeleteType ends
-
-dseg ends
+#include "commons.inc"
 
 thread main
     dseg segment
-        fileOpen FileOpenType
-        fileClose FileCloseType
-        fileRW FileReadWriteType
-        fileResolve FileResolveHandleType
-        fileRename FileRenameType
-        fileDel FileDeleteType
+        fileOpen FileOpenT
+        fileClose FileCloseT
+        fileRW FileReadWriteT
+        fileResolve FileResolveHandleT
+        fileRename FileRenameT
+        fileDel FileDeleteT
         totLen dword
-        numStr byte[]
     dseg ends
 
     // 1. Create a new file
@@ -106,32 +66,22 @@ skipSecondWrite:
     syscall FileClose, fileClose // close file
 
     // 5. Dumps that in standard output
-    set fileRW.FileHandle, 0 // special file handler
-    syscall FileWrite, fileRW // write in standard output
-
-    numtostr fileRW.Buffer, totLen // also output the size
-    strlen fileRW.Length, fileRW.Buffer
-    syscall FileWrite, fileRW
+    dumpStr(fileRW.Buffer)
+    dumpInt(totLen)
 
     // 6. Remove
     mov fileDel.Filename, fileOpen.Filename
     syscall FileDelete, fileDel
     brtst NEQ, failedAtSomePoint, fileDel.Result
 
-    syscall FileOpenRead, fileOpen // this time, that shouldn't work
-    brtst NEQ, tEnd, fileOpen.Result
+    syscall FileOpenRead, fileOpen // This time, that shouldn't work ...
+    brtst NEQ, tEnd, fileOpen.Result // ... Thus the jump is taken !
 
 failedAtSomePoint:
-    set fileRW.FileHandle, 0
-    mov fileRW.Buffer, "this failed at some point"
-    strlen fileRW.Length, fileRW.Buffer
-    syscall FileWrite, fileRW
+    dumpStr("this failed at some point")
 
 tEnd:
-    set fileRW.FileHandle, 0
-    mov fileRW.Buffer, "\n"
-    strlen fileRW.Length, fileRW.Buffer
-    syscall FileWrite, fileRW
+    dumpStr("\n")
 
     // at the end of the program, the output should be "this, this, and that 21"
 endt

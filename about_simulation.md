@@ -1,5 +1,7 @@
 # A few note on the simulation
 
+**Note:** there are a few useful macros [here](tests/commons.inc).
+
 By default, the robot is dropped at a random position (that may change in the future) in a 25x25 map surrounded by walls.
 
 The bot itself is about 2x2. It may not go outside the map since the simulator checks for collisions.
