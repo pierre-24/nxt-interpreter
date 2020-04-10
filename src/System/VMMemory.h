@@ -163,5 +163,7 @@ public:
 	 */
 	void *getArrayData(unsigned dstocEntry);
 
+	const RXEFile* getFile() const { return programData; }
+
 	void dumpDopeVectors();
 };

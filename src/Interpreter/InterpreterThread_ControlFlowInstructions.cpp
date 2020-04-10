@@ -34,7 +34,7 @@ void InterpreterThread::op_brcmp(unsigned flags, const uint16_t *params)
 	
 	int a = memory->getScalarValue(params[1]);
 	int b = memory->getScalarValue(params[2]);
-	if (compare(flags, a, b))
+	if (aggregatedComparisonBetweenScalarValues(flags, a, b))
 	{
 		int16_t offset = int16_t(params[0]);
 		instruction += (offset - 4);
@@ -49,7 +49,7 @@ void InterpreterThread::op_brtst(unsigned flags, const uint16_t *params)
 	// 1: Source, memory location
 	
 	int a = memory->getScalarValue(params[1]);
-	if (compare(flags, a, 0))
+	if (aggregatedComparisonBetweenScalarValues(flags, a, 0))
 	{
 		int16_t offset = int16_t(params[0]);
 		instruction += (offset - 3);

@@ -143,3 +143,8 @@ const char *RXEFile::nameForType(RXEFile::dstocType type)
 	}
 	
 }
+
+bool RXEFile::isAggregatedType(unsigned memoryLoc) const {
+    auto t = getTypeAtDSTOCIndex(memoryLoc);
+    return t == RXEFile::TC_ARRAY || t == RXEFile::TC_CLUSTER;
+}

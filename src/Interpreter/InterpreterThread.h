@@ -48,7 +48,10 @@ class InterpreterThread
 	bool isTerminated;
 	
 	// Helpers used internally by other ops
-	bool compare(unsigned mode, int a, int b);
+	static bool aggregatedComparisonBetweenScalarValues(unsigned mode, int a, int b);
+	bool aggregatedComparisonBetweenMemoryLocation(unsigned mode, unsigned mem1, unsigned mem2);
+	bool aggregatedComparisonBetweenScalarValueAndAggregated(unsigned mode, int32_t scalar, unsigned memoryLoc, bool isScalarLeft);
+
 	void configureOutputForPort(unsigned port, unsigned numParams, const uint16_t *params);
 	
 	// Math Instructions

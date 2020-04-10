@@ -185,6 +185,9 @@ public:
 	
 	/*! Actual code data */
 	const uint16_t *getCode() const { return code; }
+
+	/*! Check if the type of a memory location is an aggregated (array or cluster) type */
+    bool isAggregatedType(unsigned memoryLoc) const ;
 	
 	// Debug
 	/*! Name of a type used in the Dataspace Table of Contents, or "?????" if not a valid type. */

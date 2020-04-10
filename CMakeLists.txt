@@ -27,6 +27,7 @@ add_executable(nxt_interpreter
         src/Environment/Simulation.cpp
         # interpreter
         src/Interpreter/Interpreter.cpp
+        src/Interpreter/AggregatedTypeIterators.cpp
         src/Interpreter/InterpreterThread.cpp
         src/Interpreter/InterpreterThread_CompareInstructions.cpp
         src/Interpreter/InterpreterThread_ControlFlowInstructions.cpp
