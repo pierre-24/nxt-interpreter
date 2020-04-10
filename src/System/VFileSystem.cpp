@@ -187,3 +187,14 @@ void VFileSystem::FileWrite(unsigned &status, unsigned handle, const char *buff,
         status = VFileError::IllegalHandle;
     }
 }
+
+void VFileSystem::FileResolveHandle(unsigned &status, unsigned &handle, bool &write, const char *filename) {
+    auto it = openedHandles.find(std::string(filename));
+    if(it == openedHandles.end()) {
+        status = VFileError::FileNotFound;
+    } else {
+        handle = it->second;
+        write = getFileHandle(handle)->flags & FileHandlerConstants::OpenWrite;
+        status = VFileError::Success;
+    }
+}

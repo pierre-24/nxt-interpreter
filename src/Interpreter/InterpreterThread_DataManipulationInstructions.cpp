@@ -128,12 +128,30 @@ void InterpreterThread::op_unflatten(unsigned flags, const uint16_t *params)
 
 void InterpreterThread::op_numtostring(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored numtostring" << std::endl;
+    // 0: Destination (memory location)
+    // 1: Source (memory location)
+
+    auto s = std::to_string(memory->getScalarValue(params[1]));
+    memory->setArrayLength(params[0], s.length() + 1 /* don't forget '\0' !*/);
+
+    for (int i = 0; i < s.length(); ++i)
+        memory->setArrayElement(params[0], i, s.at(i));
+
+    memory->setArrayElement(params[0], s.length(), '\0');
 }
 
 void InterpreterThread::op_stringtonum(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored stringtonum" << std::endl;
+    // 0: Destination (memory location)
+    // 1: Source (memory location)
+
+    char* buff = reinterpret_cast<char*>(memory->getArrayData(params[1]));
+    char* end;
+    int32_t i = strtol(buff, &end, 10);
+    if(end == buff)
+        memory->setScalarValue(params[0], 0);
+    else
+        memory->setScalarValue(params[0], i);
 }
 
 void InterpreterThread::op_strcat(unsigned flags, const uint16_t *params)

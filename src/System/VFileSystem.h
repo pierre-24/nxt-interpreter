@@ -54,6 +54,8 @@ public:
     void FileRead(unsigned& status, unsigned handle, char* buff, unsigned &length);
     void FileWrite(unsigned& status, unsigned handle, const char* buff, unsigned &length);
 
+    void FileResolveHandle(unsigned& status, unsigned& handle, bool& write, const char* filename);
+
     // TODO: allow handler 0 (= standard output) only for write !
 
     void FileClose(unsigned& status, unsigned handle);

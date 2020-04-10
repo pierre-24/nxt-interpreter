@@ -1,0 +1,120 @@
+dseg segment
+
+FileOpenType struct
+	Result word
+	FileHandle byte
+	Filename byte[]
+	Length dword
+FileOpenType ends
+
+FileReadWriteType struct
+	Result word
+	FileHandle byte
+	Buffer byte[]
+	Length dword
+FileReadWriteType ends
+
+FileCloseType struct
+	Result word
+	FileHandle byte
+FileCloseType ends
+
+FileResolveHandleType struct
+	Result word
+	FileHandle byte
+	WriteHandle byte
+	Filename byte[]
+FileResolveHandleType ends
+
+dseg ends
+
+/*dseg segment
+	FileResolveHandleType struct
+	Result word
+	FileHandle byte
+	WriteHandle byte
+	Filename byte[]
+	FileResolveHandleType ends
+dseg ends
+
+dseg segment
+	FileRenameType struct
+	Result word
+	OldFilename byte[]
+	NewFilename byte[]
+FileRenameType ends
+
+dseg ends
+
+dseg segment
+	FileDeleteType struct
+	Result word
+	Filename byte[]
+	FileDeleteType ends
+dseg ends*/
+
+thread main
+    dseg segment
+        fileOpen FileOpenType
+        fileClose FileCloseType
+        fileRW FileReadWriteType
+        fileResolve FileResolveHandleType
+        totLen dword
+        numStr byte[]
+    dseg ends
+
+    // 1. Create a new file
+    mov fileOpen.Filename, "test.txt"
+    set fileOpen.Length, 50 // don't forget the size !
+    syscall FileOpenWrite, fileOpen // open the file, can check `fileOpen.Result`
+
+    mov fileRW.FileHandle, fileOpen.FileHandle
+    mov fileRW.Buffer, "this, " // put a string in the structure
+    strlen fileRW.Length, fileRW.Buffer // don't forget to put its size !
+    mov totLen, fileRW.Length // keep that for later
+    syscall FileWrite, fileRW // write in the file
+
+    // resolve filename, just for fun
+    mov fileResolve.Filename, fileOpen.Filename
+    syscall FileResolveHandle, fileResolve
+
+    brcmp NEQ, skipSecondWrite, fileResolve.FileHandle, fileOpen.FileHandle // test is false, jump is not taken, because the handles are (normally) equals ;)
+    syscall FileWrite, fileRW // and once again, because why not ;)
+    add totLen, totLen, fileRW.Length // keep that for later
+
+skipSecondWrite:
+    mov fileClose.FileHandle, fileOpen.FileHandle
+    syscall FileClose, fileClose // close file
+
+    // 2. Append
+    syscall FileOpenAppend, fileOpen // filename is already set up
+
+    mov fileRW.FileHandle, fileOpen.FileHandle
+    mov fileRW.Buffer, "and that "
+    strlen fileRW.Length, fileRW.Buffer
+    add totLen, totLen, fileRW.Length // keep that for later
+    syscall FileWrite, fileRW // write again in the file
+
+    mov fileClose.FileHandle, fileOpen.FileHandle
+    syscall FileClose, fileClose // close file
+
+    // 3. Read
+    syscall FileOpenRead, fileOpen // filename is already set up
+
+    mov fileRW.FileHandle, fileOpen.FileHandle
+    mov fileRW.Length, totLen // will read `totLen` bytes
+    syscall FileRead, fileRW
+
+    mov fileClose.FileHandle, fileOpen.FileHandle
+    syscall FileClose, fileClose // close file
+
+    // 4. Dumps that in standard output
+    set fileRW.FileHandle, 0 // special file handler
+    syscall FileWrite, fileRW // write in standard output
+
+    numtostr fileRW.Buffer, totLen // also output the size
+    strlen fileRW.Length, fileRW.Buffer
+    syscall FileWrite, fileRW
+
+    // at the end of the program, the output should be "this, this, and that 21"
+endt
