@@ -14,23 +14,23 @@
 #include "../System/VMMemory.h"
 #include "Interpreter.h"
 
-InterpreterThread::InterpreterThread(const  unsigned startClump, Interpreter* anIntepreter, const RXEFile *aFile, System *aSystem)
-: file(aFile), memory(aSystem->getMemory()), system(aSystem), interpreter(anIntepreter)
+InterpreterThread::InterpreterThread(unsigned clump, Interpreter *interpreter, System *system) :
+        memory(system->getMemory()), system(system), interpreter(interpreter)
 {
-    currentClump = startClump;
-	instruction = file->getCodeStartForClump(currentClump);
+    currentClump = clump;
+	instruction = memory->getFile()->getCodeStartForClump(currentClump);
 	waitUntil = 0;
     isTerminated = false;
 }
 
 bool InterpreterThread::step()
 {
-	if (done()) return false; // TODO: finclump
+	if (done()) return false;
 	
 	if (system->getTick() < waitUntil)
 		return true;
 	
-	const uint16_t *code = file->getCode();
+	const uint16_t *code = memory->getFile()->getCode();
 	
 	if (code[instruction] & (1 << 11))
 	{

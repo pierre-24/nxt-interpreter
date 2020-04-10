@@ -2,12 +2,10 @@
  *  Interpreter_DataManipulationInstructions.cpp
  *  mindstormssimulation
  *
- *  Created by Torsten Kammer on 26.04.10
+ *  Created by Torsten Kammer on 26.04.10, modified by Pierre on 10.04.20
  *  Copyright 2010 RWTH Aachen University All rights reserved.
  *
  */
-
-#include <cstring>
 
 #include "InterpreterThread.h"
 
@@ -87,8 +85,8 @@ void InterpreterThread::op_mov(unsigned flags, const uint16_t *params)
 	// 0: Destination, memory location
 	// 1: Source, memory location
 	
-	RXEFile::dstocType destType = file->getTypeAtDSTOCIndex(params[0]);
-	RXEFile::dstocType srcType = file->getTypeAtDSTOCIndex(params[1]);
+	RXEFile::dstocType destType = memory->getFile()->getTypeAtDSTOCIndex(params[0]);
+	RXEFile::dstocType srcType = memory->getFile()->getTypeAtDSTOCIndex(params[1]);
 	
 	if (destType == RXEFile::TC_ARRAY && srcType == RXEFile::TC_ARRAY)
 	{
@@ -100,7 +98,7 @@ void InterpreterThread::op_mov(unsigned flags, const uint16_t *params)
 	}
 	else if ((destType == RXEFile::TC_VOID || destType == RXEFile::TC_CLUSTER || destType == RXEFile::TC_ARRAY) || (srcType == RXEFile::TC_VOID || srcType == RXEFile::TC_ARRAY || srcType == RXEFile::TC_CLUSTER || srcType == RXEFile::TC_ARRAY))
 	{
-		std::cout << "ignored complex mov from type " << file->nameForType(srcType) << " to type " << file->nameForType(destType) << std::endl;
+		std::cout << "ignored complex mov from type " << RXEFile::nameForType(srcType) << " to type " << RXEFile::nameForType(destType) << std::endl;
 		return;
 	}
 	else // Scalar move

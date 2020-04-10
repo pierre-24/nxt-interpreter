@@ -47,7 +47,7 @@ bool Interpreter::runForTime(float mintime) noexcept(false) {
 }
 
 void Interpreter::scheduleClump(unsigned clump) {
-    threads.push_back(new InterpreterThread(clump, this, file, system));
+    threads.push_back(new InterpreterThread(clump, this, system));
 }
 
 void Interpreter::scheduleDependantClumps(unsigned clump, unsigned start, unsigned end) {

@@ -107,7 +107,7 @@ void InterpreterThread::op_subcall(unsigned flags, const uint16_t *params)
 	
 	// Branch into new clump
 	currentClump = params[0];
-	instruction = file->getCodeStartForClump(currentClump);
+	instruction = memory->getFile()->getCodeStartForClump(currentClump);
 }
 
 void InterpreterThread::op_subret(unsigned flags, const uint16_t *params)

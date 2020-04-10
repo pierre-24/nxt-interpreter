@@ -32,7 +32,7 @@ class Interpreter;
  */
 class InterpreterThread
 {
-	const RXEFile *file;
+	// const RXEFile *file;
 	VMMemory *memory;
 	System *system;
 	Interpreter* interpreter; // for scheduling
@@ -123,7 +123,7 @@ public:
 	 * same RXE file.
 	 * @param system The System interface used for IO and syscalls.
 	 */
-	InterpreterThread(unsigned clump, Interpreter* interpreter, const RXEFile *file, System *system);
+    InterpreterThread(unsigned clump, Interpreter *interpreter, System *system);
 	
 	/*!
 	 * @abstract Executes a single operation. Return false if the thread is terminated

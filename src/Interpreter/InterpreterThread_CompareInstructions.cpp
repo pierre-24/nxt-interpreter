@@ -39,7 +39,7 @@ bool InterpreterThread::aggregatedComparisonBetweenScalarValueAndAggregated(unsi
     AggregatedTypeIterator* it = getAggregatedIterator(memory, memoryLoc);
     while (it->hasNext()) {
         bool result;
-        if(file->isAggregatedType(it->elementType()))
+        if(memory->getFile()->isAggregatedType(it->elementType()))
             result = aggregatedComparisonBetweenScalarValueAndAggregated(mode, scalar, **it, isScalarLeft);
         else
             result = aggregatedComparisonBetweenScalarValues(mode, isScalarLeft? scalar: **it, isScalarLeft? **it : scalar);
@@ -56,7 +56,7 @@ bool InterpreterThread::aggregatedComparisonBetweenScalarValueAndAggregated(unsi
 }
 
 bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode, unsigned mem1, unsigned mem2) {
-    bool isLeftAggregated = file->isAggregatedType(mem1), isRightAggregated = file->isAggregatedType(mem2);
+    bool isLeftAggregated = memory->getFile()->isAggregatedType(mem1), isRightAggregated = memory->getFile()->isAggregatedType(mem2);
 
     if(!isLeftAggregated && !isRightAggregated) { // scalar comparison
         return aggregatedComparisonBetweenScalarValues(mode, memory->getScalarValue(mem1), memory->getScalarValue(mem2));
@@ -65,7 +65,7 @@ bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode,
         bool finalResult = true;
         while (it1->hasNext() && it2->hasNext()) {
             bool result;
-            bool isLeftElementAggregated = file->isAggregatedType(it1->elementType()), isRightElementAggregated = file->isAggregatedType(it2->elementType());
+            bool isLeftElementAggregated = memory->getFile()->isAggregatedType(it1->elementType()), isRightElementAggregated = memory->getFile()->isAggregatedType(it2->elementType());
 
             if(!isLeftElementAggregated && !isRightElementAggregated)
                 result = aggregatedComparisonBetweenScalarValues(mode, **it1, **it2);
@@ -108,7 +108,7 @@ void InterpreterThread::op_cmp(unsigned flags, const uint16_t *params)
 	// 1: Source1, memory location
 	// 2: Source2, memory location
 
-    if(!file->isAggregatedType(params[0])) {
+    if(!memory->getFile()->isAggregatedType(params[0])) {
         bool result = aggregatedComparisonBetweenMemoryLocation(flags, params[1], params[2]);
         memory->setScalarValue(params[0], result);
     } else {
@@ -122,8 +122,8 @@ void InterpreterThread::op_tst(unsigned flags, const uint16_t *params)
 	// 0: Destination, memory location - store result here
 	// 1: Source, memory location
 
-	if(!file->isAggregatedType(params[0])) {
-        if(!file->isAggregatedType(params[1])) {
+	if(!memory->getFile()->isAggregatedType(params[0])) {
+        if(!memory->getFile()->isAggregatedType(params[1])) {
             int a = memory->getScalarValue(params[1]);
             memory->setScalarValue(params[0], aggregatedComparisonBetweenScalarValues(flags, a, 0));
         } else

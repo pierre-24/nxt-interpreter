@@ -56,7 +56,7 @@ void InterpreterThread::op_setout(unsigned flags, const uint16_t *params)
 	// params[0] is in bytes. Subtract instruction, inst.-size, port
 	unsigned numParams = (params[0] / 2) - 3;
 	
-	RXEFile::dstocType portType = file->getTypeAtDSTOCIndex(params[1]);
+	RXEFile::dstocType portType = memory->getFile()->getTypeAtDSTOCIndex(params[1]);
 	if (portType == RXEFile::TC_ARRAY)
 	{
 		for (unsigned i = 0; i < memory->getArrayLength(params[1]); i++)
