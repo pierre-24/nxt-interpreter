@@ -34,8 +34,9 @@ I dropped:
 ... And I added:
 
 + I implemented some of the few remaning opcodes.
-+ A threading mechanism, so `op_finclump` really schedule other clumps (= threads).
-+ A virtual file system.
++ A threading mechanism, so `op_finclump` really schedule other clumps (= threads) (see [there](tests/thread.nbc)).
++ A virtual file system, if you ever need that (see [there](tests/file.nbc)).
++ A special handler, `0` for the standard output, so you can `FileWrite` directly in it (it is always open and you can't close it anyway).
 
 ## Note: the project structure
 
