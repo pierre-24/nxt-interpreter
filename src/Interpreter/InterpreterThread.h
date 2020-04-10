@@ -65,9 +65,9 @@ class InterpreterThread
 	void op_abs(unsigned flags, const uint16_t *params);
 	
 	// Logical Instructions
-	void op_and(unsigned flags, const uint16_t *params); // not implemented
-	void op_or(unsigned flags, const uint16_t *params); // not implemented
-	void op_xor(unsigned flags, const uint16_t *params); // not implemented
+	void op_and(unsigned flags, const uint16_t *params);
+	void op_or(unsigned flags, const uint16_t *params);
+	void op_xor(unsigned flags, const uint16_t *params);
 	void op_not(unsigned flags, const uint16_t *params);
 	
 	// Compare Instructions

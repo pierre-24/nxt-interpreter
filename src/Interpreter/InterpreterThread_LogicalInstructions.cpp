@@ -16,17 +16,32 @@
 
 void InterpreterThread::op_and(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored and" << std::endl;
+    // Params:
+    // 0: Destination, memory location
+    // 1: Source 1, memory location
+    // 2: Source 2, memory location
+
+    memory->setScalarValue(params[0], unsigned (memory->getScalarValue(params[1])) & unsigned (memory->getScalarValue(params[2])));
 }
 
 void InterpreterThread::op_or(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored or" << std::endl;
+    // Params:
+    // 0: Destination, memory location
+    // 1: Source 1, memory location
+    // 2: Source 2, memory location
+
+    memory->setScalarValue(params[0], unsigned (memory->getScalarValue(params[1])) | unsigned (memory->getScalarValue(params[2])));
 }
 
 void InterpreterThread::op_xor(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored xor" << std::endl;
+    // Params:
+    // 0: Destination, memory location
+    // 1: Source 1, memory location
+    // 2: Source 2, memory location
+
+    memory->setScalarValue(params[0], unsigned (memory->getScalarValue(params[1])) ^ unsigned (memory->getScalarValue(params[2])));
 }
 
 void InterpreterThread::op_not(unsigned flags, const uint16_t *params)
@@ -37,6 +52,6 @@ void InterpreterThread::op_not(unsigned flags, const uint16_t *params)
 	
 	int a = memory->getScalarValue(params[1]);
 	
-	// Notice: This is logical, not bitwise, per Lego documentation
+	// Notice: This should be logical, not bitwise, per Lego documentation
 	memory->setScalarValue(params[0], !a);
 }
