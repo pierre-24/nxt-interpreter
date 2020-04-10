@@ -37,22 +37,24 @@ bool InterpreterThread::aggregatedComparisonBetweenScalarValues(unsigned mode, i
 
 bool InterpreterThread::aggregatedComparisonBetweenScalarValueAndAggregated(unsigned mode, int32_t scalar, unsigned memoryLoc, bool isScalarLeft) {
     AggregatedTypeIterator* it = getAggregatedIterator(memory, memoryLoc);
+    bool finalResult = mode != 5;
     while (it->hasNext()) {
         bool result;
-        if(memory->getFile()->isAggregatedType(it->elementType()))
+        if(it->isAggregatedType())
             result = aggregatedComparisonBetweenScalarValueAndAggregated(mode, scalar, **it, isScalarLeft);
-        else
+        else {
             result = aggregatedComparisonBetweenScalarValues(mode, isScalarLeft? scalar: **it, isScalarLeft? **it : scalar);
-
-        if(!result) {
-            delete it;
-            return false;
         }
-        ++it;
+
+        if((!result && mode != 5) || (result && mode == 5)) {
+            finalResult = !finalResult;
+            break;
+        }
+        ++(*it);
     }
 
     delete it;
-    return true;
+    return finalResult;
 }
 
 bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode, unsigned mem1, unsigned mem2) {
@@ -62,10 +64,10 @@ bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode,
         return aggregatedComparisonBetweenScalarValues(mode, memory->getScalarValue(mem1), memory->getScalarValue(mem2));
     } else if (isLeftAggregated && isRightAggregated) { // aggregated comparison
         AggregatedTypeIterator *it1 = getAggregatedIterator(memory, mem1), *it2 = getAggregatedIterator(memory, mem2);
-        bool finalResult = true;
+        bool finalResult = mode != 5;
         while (it1->hasNext() && it2->hasNext()) {
             bool result;
-            bool isLeftElementAggregated = memory->getFile()->isAggregatedType(it1->elementType()), isRightElementAggregated = memory->getFile()->isAggregatedType(it2->elementType());
+            bool isLeftElementAggregated = it1->isAggregatedType(), isRightElementAggregated = it2->isAggregatedType();
 
             if(!isLeftElementAggregated && !isRightElementAggregated)
                 result = aggregatedComparisonBetweenScalarValues(mode, **it1, **it2);
@@ -73,13 +75,12 @@ bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode,
                 result = aggregatedComparisonBetweenMemoryLocation(mode, **it1, **it2);
             else
                 result = aggregatedComparisonBetweenScalarValueAndAggregated(mode,
-                        memory->getScalarValue(
-                                isLeftElementAggregated ? **it2 : **it1),
-                                isLeftElementAggregated ? **it1 : **it2,
-                                isRightElementAggregated);
+                        memory->getScalarValue(isLeftElementAggregated ? **it2 : **it1),
+                        isLeftElementAggregated ? **it1 : **it2,
+                        isRightElementAggregated);
 
-            if(!result) {
-                finalResult = false;
+            if((!result && mode != 5) || (result && mode == 5)) {
+                finalResult = !finalResult;
                 break;
             }
 
@@ -91,7 +92,7 @@ bool InterpreterThread::aggregatedComparisonBetweenMemoryLocation(unsigned mode,
         delete it1;
         delete it2;
 
-        return  finalResult; // they
+        return  finalResult;
     } else { // scalar and aggregated comparison
         return aggregatedComparisonBetweenScalarValueAndAggregated(mode,
                 memory->getScalarValue(

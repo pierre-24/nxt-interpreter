@@ -1,0 +1,69 @@
+#include "commons.inc"
+
+dseg segment
+
+AStructT struct
+    x dword 0
+    y dword 0
+    w ubyte[] {0, 1, 2}
+    z dword 0
+AStructT ends
+
+BStructT struct
+    s AStructT
+    z dword 0
+BStructT ends
+
+u AStructT
+v AStructT
+
+m BStructT
+n BStructT
+
+a long[] {1, 2, 3}
+b long[] {1, 2, 3}
+c long[] {4, 5, 6}
+
+x dword 5
+y dword 5
+
+truth ubyte
+
+dseg ends
+
+thread main
+    cmp EQ, truth, x, y
+    dumpInt(truth) // -- 1
+
+    cmp EQ, truth, a, b // are all element of a and b equals with each other ?
+    dumpInt(truth) // -- 1
+
+    replace b, b, 0, 2 // replace element 0 of `b` by `2`
+    cmp EQ, truth, a, b
+    dumpInt(truth) // -- 0
+
+    cmp NEQ, truth, a, b // is the opposite true ?
+    dumpInt(truth) // -- 1
+
+    cmp GT, truth, c, a // are all element of `c` smaller than the corresponding one in `a` ?
+    dumpInt(truth) // -- 1
+
+    cmp LT, truth, a, x // are all element of `a` smaller than `x` ?
+    dumpInt(truth) // -- 1
+
+    cmp LT, truth, x, b // is x smaller than all element of `a` ?
+    dumpInt(truth) // -- 0
+
+    cmp LT, truth, -2, b // is `-2` smaller than all element of `a` ?
+    dumpInt(truth) // -- 1
+
+    cmp EQ, truth, u, v // is the content of `u` and `v` equal ?
+    dumpInt(truth) // -- 1
+
+    replace u.w, u.w, 2, 42
+    cmp EQ, truth, u, v // is the content of `u` and `v` still equal ?
+    dumpInt(truth) // -- 0
+
+    cmp EQ, truth, m, n // is the content of `m` and `n` equal ?
+    dumpInt(truth) // -- 1
+endt

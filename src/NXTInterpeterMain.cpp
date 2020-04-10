@@ -13,7 +13,7 @@
 void printUsageAndExit(const std::string& pname)
 {
     std::cout << "Execute RXE file" << std::endl;
-    std::cout << "Usage: "  << pname << " inputfile" << std::endl;
+    std::cout << "Usage: "  << pname << " [-g] inputfile" << std::endl;
     exit(0);
 }
 
@@ -26,11 +26,21 @@ void printRobotInfo(const Robot* robot) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) printUsageAndExit(argv[0]);
+    if (argc < 2) printUsageAndExit(argv[0]);
+
+    bool debug = false;
+    char* filename = nullptr;
+    for (int i = 0; i < argc; ++i) {
+        if (strcmp(argv[i], "-g") == 0)
+            debug = true;
+        else
+            filename = argv[i];
+    }
+
+    if (filename == nullptr)
+        printUsageAndExit(argv[0]);
 
     ExecutionContext* context;
-
-    std::cout << ".setup context and system" << std::endl;
 
     try {
         context = new ExecutionContext(argv[1]);
@@ -40,28 +50,27 @@ int main(int argc, char *argv[]) {
     }
 
     // setup environment
-    std::cout << ".setup environment" << std::endl;
     auto* simulation = new Simulation(new Environment(25, 25, 1.0f, 0.75f)); // TODO: change size and stuffs
 
     // Setup robot through its "network interface"
-    std::cout << ".setup robot" << std::endl;
     auto* robotInterface = new SingleRobotNetworkInterface(simulation);
     context->setNetworkInterface(robotInterface);
 
     auto* robot = robotInterface->getLocalRobot();
 
-    std::cout << ".note initial ";
-    printRobotInfo(robot);
-    std::cout << std::endl;
+    if(debug) {
+        std::cout << ".note initial ";
+        printRobotInfo(robot);
+        std::cout << std::endl;
+    }
 
     // simulate
     float run_time = EXEC_FRACTION * TOTAL_ROUND;
     int nperiod = 0;
     bool running = true;
 
-    std::cout << ".note period is (about) " << int(TOTAL_ROUND * 1000) << " ms" << std::endl;
-
-    std::cout << "-- start (at t=" << context->getTick() << " ms)" << std::endl;
+    if(debug)
+        std::cout << "-- start (at t=" << context->getTick() << " ms)" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -76,11 +85,13 @@ int main(int argc, char *argv[]) {
             std::this_thread::sleep_for(std::chrono::microseconds (int((TOTAL_ROUND - run_time) * 1000000.f)));
     }
 
-    std::cout << "-- end (at t=" << context->getTick() << " ms, nperiod=" << nperiod << ")" << std::endl;
+    if (debug) {
+        std::cout << "-- end (at t=" << context->getTick() << " ms, nperiod=" << nperiod << ")" << std::endl;
 
-    std::cout << ".note final ";
-    printRobotInfo(robot);
-    std::cout << std::endl;
+        std::cout << ".note final ";
+        printRobotInfo(robot);
+        std::cout << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }

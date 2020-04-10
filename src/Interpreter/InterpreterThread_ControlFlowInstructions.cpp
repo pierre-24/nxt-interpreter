@@ -31,10 +31,8 @@ void InterpreterThread::op_brcmp(unsigned flags, const uint16_t *params)
 	// 0: offset (immediate, signed): Alter PC by this much if comparison is true
 	// 1: Source1, memory location
 	// 2: Source2, memory location
-	
-	int a = memory->getScalarValue(params[1]);
-	int b = memory->getScalarValue(params[2]);
-	if (aggregatedComparisonBetweenScalarValues(flags, a, b))
+
+	if (aggregatedComparisonBetweenMemoryLocation(flags, params[1], params[2]))
 	{
 		int16_t offset = int16_t(params[0]);
 		instruction += (offset - 4);
@@ -47,9 +45,15 @@ void InterpreterThread::op_brtst(unsigned flags, const uint16_t *params)
 	// Parameters:
 	// 0: offset (immediate, signed): Alter PC by this much if comparison is true
 	// 1: Source, memory location
-	
-	int a = memory->getScalarValue(params[1]);
-	if (aggregatedComparisonBetweenScalarValues(flags, a, 0))
+
+	bool jump;
+
+    if(memory->getFile()->isAggregatedType(params[0]))
+        jump = aggregatedComparisonBetweenScalarValueAndAggregated(flags, 0, params[0], false);
+    else
+        jump = aggregatedComparisonBetweenScalarValues(flags, memory->getScalarValue(params[0]), 0);
+
+	if (jump)
 	{
 		int16_t offset = int16_t(params[0]);
 		instruction += (offset - 3);
@@ -70,7 +74,7 @@ void InterpreterThread::op_finclump(unsigned flags, const uint16_t *params)
 
     isTerminated = true;
 
-    if(params[0] != 0xffff) {
+    if(params[0] != 0xffff /* it would be -1 if this was a signed number */) {
         interpreter->scheduleDependantClumps(currentClump, params[0], params[1]);
     }
 }

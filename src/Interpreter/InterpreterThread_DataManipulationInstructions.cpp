@@ -16,7 +16,6 @@
 
 void InterpreterThread::op_index(unsigned flags, const uint16_t *params)
 {
-	// Store element of array in scalar
 	// Params:
 	// 0: Destination, scalar, memory location
 	// 1: Source, array, memory location
@@ -30,7 +29,25 @@ void InterpreterThread::op_index(unsigned flags, const uint16_t *params)
 
 void InterpreterThread::op_replace(unsigned flags, const uint16_t *params)
 {
-	std::cout << "ignored replace" << std::endl;
+    // Params:
+    // 0: destination array (memory location)
+    // 1: source array (memory location)
+    // 2: index (memory location)
+    // 3: value, either a single value or an array (memory location)
+
+    if(params[1] != params[0])
+        memory->setArrayLength(params[0], memory->getArrayLength(params[1]));
+
+    for (int i = 0; i < memory->getArrayLength(params[1]); ++i)
+        memory->setArrayElement(params[0], i, memory->getArrayElement(params[1], i));
+
+    unsigned index = memory->getScalarValue(params[2]);
+    if(memory->getFile()->getTypeAtDSTOCIndex(params[3]) == RXEFile::TC_ARRAY) {
+        for (int i = 0; i < memory->getArrayLength(params[3]); ++i)
+            memory->setArrayElement(params[0], index + i, memory->getArrayElement(params[3], i));
+    } else {
+        memory->setArrayElement(params[0], index, memory->getScalarValue(params[3]));
+    }
 }
 
 void InterpreterThread::op_arrsize(unsigned flags, const uint16_t *params)
