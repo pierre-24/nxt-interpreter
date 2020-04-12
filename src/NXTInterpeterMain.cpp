@@ -20,7 +20,7 @@ void printUsageAndExit(const std::string& pname)
 void printRobotInfo(const Robot* robot) {
     std::cout << "position of the robot is "
     << "x=" << robot->getPosition()[3][0]
-    << ";y=" <<  robot->getPosition()[3][2]
+    << ";z=" <<  robot->getPosition()[3][2]
     // TODO: is this assuming an opposite convention w.r.t. the trigonometric one?
     << ";theta=" << std::acos(robot->getPosition()[0][0]) / M_PI * 180. * ((robot->getPosition()[2][0] > 0)? -1. : 1.);
 }
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     bool debug = false;
     char* filename = nullptr;
-    for (int i = 0; i < argc; ++i) {
+    for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "-g") == 0)
             debug = true;
         else
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     ExecutionContext* context;
 
     try {
-        context = new ExecutionContext(argv[1]);
+        context = new ExecutionContext(filename);
     } catch (std::runtime_error& e ) {
         std::cout << "An error happened while opening the file: " << e.what() << std::endl;
         return EXIT_FAILURE;

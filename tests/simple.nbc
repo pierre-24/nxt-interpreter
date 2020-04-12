@@ -5,5 +5,3 @@ thread main
     wait 2000 // with the current parameters, that should be about 7 units of distance
     exit
 endt
-
-// note: don't mind the `ignored finclump` reported by the interpreter, it is not important

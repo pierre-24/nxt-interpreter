@@ -48,10 +48,10 @@ void InterpreterThread::op_brtst(unsigned flags, const uint16_t *params)
 
 	bool jump;
 
-    if(memory->getFile()->isAggregatedType(params[0]))
-        jump = aggregatedComparisonBetweenScalarValueAndAggregated(flags, 0, params[0], false);
+    if(memory->getFile()->isAggregatedType(params[1]))
+        jump = aggregatedComparisonBetweenScalarValueAndAggregated(flags, 0, params[1], false);
     else
-        jump = aggregatedComparisonBetweenScalarValues(flags, memory->getScalarValue(params[0]), 0);
+        jump = aggregatedComparisonBetweenScalarValues(flags, memory->getScalarValue(params[1]), 0);
 
 	if (jump)
 	{
