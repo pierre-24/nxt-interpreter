@@ -84,7 +84,7 @@ void Robot::updatePhysics(float timedelta) throw()
 		
 		float deltaStotal = (deltaSleft + deltaSright) * 0.5f;
 		
-		float deltaYaw = std::atan((deltaSleft - deltaSright) / RobotConstant::trackWidth);
+		float deltaYaw = std::atan((deltaSright - deltaSleft) / RobotConstant::trackWidth); // note: inverted to match the trigonometric sense (turning right is decreasing the angle!)
 		
 		yaw = fmodf(yaw + deltaYaw, 2.0f * float(M_PI));
 		
@@ -386,4 +386,8 @@ float Robot::getLeftTrackSpeed() const throw()
 float Robot::getRightTrackSpeed() const throw()
 {
 	return rightTrackSpeed;
+}
+
+float Robot::getYaw() const {
+    return yaw;
 }

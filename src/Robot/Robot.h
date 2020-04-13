@@ -33,8 +33,10 @@ private:
 	matrix lastPosition; // To avoid tunnelling. Used to find how much the robot moved in the last step
 	
 	float yaw;
-	
-	Motor motors[3];
+
+private:
+
+    Motor motors[3];
 	unsigned leftMotor;
 	unsigned rightMotor;
 	bool speedsSynchronized[3];
@@ -228,4 +230,6 @@ public:
 	
 	void moveDirectly(const float4 &delta) throw();
 	void setPosition(const matrix &position) throw();
+
+    float getYaw() const;
 };
