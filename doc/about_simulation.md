@@ -2,24 +2,55 @@
 
 **Note:** there are a few useful macros [here](../tests/commons.inc).
 
-
-```
-+----------------------> x
-|
-|
-|   --> (initial orientation of the robot)
-|
-|
-z
-
-```
-
-By default, the robot is dropped at a random position (that may change in the future) in a 25x25 map surrounded by walls.
-
-The bot itself is about 2x2. It may not go outside the map since the simulator checks for collisions.
+The bot itself is about 4x4. It may not go outside the map since the simulator checks for collisions.
 The interpreter assume that `OUT_A` is the left motor and `OUT_B` the right one.
 
 The constants may be adjusted before compilation in [`src/Robot/Constants.h`](../src/Robot/Constants.h)
+
+# The map
+
+This is the orientation of the axes and the default robot orientation:
+
+![](im/axes.png)
+
+The default map loaded by the interpreter looks like this
+
+```
+25;25 5;5
+* * * * * * * * * * * * * * * * * * * * * * * * *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* o o o o o o o o o o o o o o o o o o o o o o o *
+* * * * * * * * * * * * * * * * * * * * * * * * *
+```
+
+The map is given with the orientation given about (so the `0,0` cell is on the left top corner, the `24,24` cell the right bottom corner)
+
+Walls are marked by `*` while `o` are white cells (you can put "black" cells with `x` if you want to play with the light sensor).
+On the top of the file, two sets of number indicates the size of the map (here its 25x25 distances units) and then the initial position of the robot (note that it lands on the center of the `5,5` case, so its actual position is `5.5,5.5`, as reported by the debug [`-g`] output).
+The code checks of course that the dimensions matches the actual map, and that the robot does not hit a wall while landing (otherwise, the interpreter will report the issue).
+
+You can use your own map, following the same format, using the `-m path/to/file.map` option. There is an example of map [there](../tests/testmap.map).
 
 ## Moving
 

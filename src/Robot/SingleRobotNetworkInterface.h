@@ -23,6 +23,7 @@ protected:
 	virtual Robot *getLocalModifiableRobot() throw();
 public:
 	SingleRobotNetworkInterface(Simulation *aSimulation);
+    SingleRobotNetworkInterface(Simulation *aSimulation, float x, float z);
 	~SingleRobotNetworkInterface();
 	
 	virtual void update();

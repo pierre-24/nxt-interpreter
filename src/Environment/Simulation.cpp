@@ -15,11 +15,7 @@
 
 #include "Environment.h"
 #include "../Robot/Robot.h"
-
-namespace
-{
-	const float robotStartSpace = 5.0f;
-}
+#include "../Robot/Constants.h"
 
 const std::pair<float, float> &Simulation::nextPossibleStartingLocation()
 {
@@ -54,11 +50,11 @@ const std::pair<float, float> &Simulation::nextValidStartingLocation()
 bool Simulation::canPlaceRobotInAreaStartingAt(float x, float z) const
 {
 	// First: Check for walls in area
-	unsigned minCellX = unsigned(x / environment->getCellSize());
-	unsigned maxCellX = unsigned((x + robotStartSpace) / environment->getCellSize());
+	unsigned minCellX = unsigned((x - RobotConstant::robotHalfSpace) / environment->getCellSize());
+	unsigned maxCellX = unsigned((x + RobotConstant::robotHalfSpace) / environment->getCellSize());
 	
-	unsigned minCellZ = unsigned(z / environment->getCellSize());
-	unsigned maxCellZ = unsigned((z + robotStartSpace) / environment->getCellSize());
+	unsigned minCellZ = unsigned((z- RobotConstant::robotHalfSpace) / environment->getCellSize());
+	unsigned maxCellZ = unsigned((z + RobotConstant::robotHalfSpace) / environment->getCellSize());
 	
 	for (unsigned cellX = minCellX; cellX <= maxCellX; cellX++)
 	{
@@ -70,10 +66,10 @@ bool Simulation::canPlaceRobotInAreaStartingAt(float x, float z) const
 	
 	// Second: Check for robots in area
 	float4 areaBounds[] = {
-		float4(x, 0, z),
-		float4(x, 0, z + robotStartSpace),
-		float4(x + robotStartSpace, 0, z + robotStartSpace),
-		float4(x + robotStartSpace, 0, z),
+		float4(x - RobotConstant::robotHalfSpace, 0, z - RobotConstant::robotHalfSpace),
+		float4(x - RobotConstant::robotHalfSpace, 0, z + RobotConstant::robotHalfSpace),
+		float4(x + RobotConstant::robotHalfSpace, 0, z + RobotConstant::robotHalfSpace),
+		float4(x + RobotConstant::robotHalfSpace, 0, z - RobotConstant::robotHalfSpace),
 	};
 	float4 unusedResolutionVector;
 	for (std::vector<Robot *>::const_iterator iter = robots.begin(); iter != robots.end(); ++iter)
@@ -276,19 +272,19 @@ Simulation::Simulation(Environment *anEnvironment) : environment(anEnvironment)
 	unsigned xSize, zSize;
 	environment->getSize(xSize, zSize);
 	
-	unsigned numLocationsX = unsigned((float(xSize) * environment->getCellSize()) / robotStartSpace) - 1;
-	unsigned numLocationsZ = unsigned((float(zSize) * environment->getCellSize()) / robotStartSpace) - 1;
+	unsigned numLocationsX = unsigned((float(xSize) * environment->getCellSize()) / RobotConstant::robotHalfSpace / 2) - 1;
+	unsigned numLocationsZ = unsigned((float(zSize) * environment->getCellSize()) / RobotConstant::robotHalfSpace / 2) - 1;
 	
-	float locationX = robotStartSpace * 0.5f;
+	float locationX = RobotConstant::robotHalfSpace;
 	for (unsigned x = 0; x < numLocationsX; x++)
 	{
-		float locationZ = robotStartSpace * 0.5f;
+		float locationZ = RobotConstant::robotHalfSpace;
 		for (unsigned z = 0; z < numLocationsZ; z++)
 		{
 			possibleStartLocations.push_back(std::pair<float, float>(locationX, locationZ));
-			locationZ += robotStartSpace;
+			locationZ += RobotConstant::robotHalfSpace;
 		}
-		locationX += robotStartSpace;
+		locationX += RobotConstant::robotHalfSpace;
 	}
 	
 	// Now randomize it
@@ -381,15 +377,20 @@ bool Simulation::objectCollidesWithOthers(const float4 *orientedBoundingBox) con
 	return false;
 }
 
-void Simulation::addRobot(Robot *aRobot) throw(std::invalid_argument)
-{
-	if (!aRobot) throw std::invalid_argument("Trying to add NULL robot to Simulation");
-	
-	robots.push_back(aRobot);
-	
+void Simulation::addRobot(Robot *aRobot) noexcept(false) {
 	const std::pair<float, float> &location = nextValidStartingLocation();
-	
-	aRobot->setPosition(matrix::position(float4(location.first, 0.0f, location.second)));
+	addRobot(aRobot, location.first, location.second);
+}
+
+void Simulation::addRobot(Robot *aRobot, float x, float z) noexcept(false)
+{
+    if (!aRobot) throw std::invalid_argument("Trying to add NULL robot to Simulation");
+
+    if (!canPlaceRobotInAreaStartingAt(float(x), float(z)))
+        throw std::runtime_error("cannot place robot at the given position: outside simulation space or hit a wall");
+
+    robots.push_back(aRobot);
+    aRobot->setPosition(matrix::position(float4(float(x), 0.0f, float(z))));
 }
 
 void Simulation::removeRobot(Robot *aRobot)

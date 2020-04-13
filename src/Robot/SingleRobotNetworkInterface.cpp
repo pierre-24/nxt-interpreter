@@ -17,10 +17,21 @@ SingleRobotNetworkInterface::SingleRobotNetworkInterface(Simulation *aSimulation
 {
 	robot = new Robot(simulation);
 	registerNewRobot(robot);
-	simulation->addRobot(robot);
+    simulation->addRobot(robot);
 	
 	iteratorIsThrough = false;
 }
+
+SingleRobotNetworkInterface::SingleRobotNetworkInterface(Simulation *aSimulation, float x, float z) noexcept (false)
+        : simulation(aSimulation)
+{
+    robot = new Robot(simulation);
+    registerNewRobot(robot);
+    simulation->addRobot(robot, x, z);
+
+    iteratorIsThrough = false;
+}
+
 
 SingleRobotNetworkInterface::~SingleRobotNetworkInterface()
 {

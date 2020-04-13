@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <vector>
 
+
 class Environment;
 class Robot;
 union float4;
@@ -64,8 +65,9 @@ public:
 	Simulation(Environment *anEnvironment);
 	
 	void resetRobots();
-	
-	void addRobot(Robot *aRobot) throw(std::invalid_argument);
+
+    void addRobot(Robot *aRobot) noexcept(false);
+	void addRobot(Robot *aRobot, float x, float z) noexcept(false);
 	void removeRobot(Robot *aRobot);
 	
 	void update(float timedelta) throw();

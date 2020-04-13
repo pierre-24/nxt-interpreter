@@ -19,6 +19,8 @@ namespace RobotConstant {
     // width of the robot (from one wheel to the other):
     const float trackWidth = botHalfWidth*2.0f;
 
+    const float robotHalfSpace = 2.f;
+
     // diameter of a wheel
     const float wheelDiameter = 0.4f;
 

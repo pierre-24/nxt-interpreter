@@ -25,6 +25,7 @@ add_executable(nxt_interpreter
         # environment
         src/Environment/Environment.cpp
         src/Environment/Simulation.cpp
+        src/Environment/Map.cpp
         # interpreter
         src/Interpreter/Interpreter.cpp
         src/Interpreter/AggregatedTypeIterators.cpp
