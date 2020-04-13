@@ -92,7 +92,7 @@ $ ./nxt_interpreter ../tests/simple.rxe -g
 .note final position of the robot is x=14.4804;z=17.5;theta=0
 ```
 
-To get more information about the robot and its movement, check a few things [there](about_simulation.md).
+To get more information about the robot and its movement, check a few things [there](doc/about_simulation.md).
 
 ## Note: dropped and added stuffs
 
