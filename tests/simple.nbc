@@ -1,7 +1,7 @@
 // just move forward for 2 seconds
 
 thread main
-    OnFwd(OUT_AB,100) // Note: left and right motors are assumed to be on OUT_A and OUT_B
-    wait 2000 // with the current parameters, that should be about 7 units of distance
+    OnFwd(OUT_BC,80) // Note: left and right motors are assumed to be on OUT_B and OUT_C
+    wait 1000 // with the current parameters, that should be about 5 units of distance
     exit
 endt

@@ -86,10 +86,10 @@ There is also a `-g` option if you want to get an idea on what you robot did (se
 
 ```
 $ ./nxt_interpreter ../tests/simple.rxe -g
-.note initial position of the robot is x=7.5;z=17.5;theta=0
+.note initial position of the robot is x=5.5;z=5.5;theta=0
 -- start (at t=0 ms)
--- end (at t=2001 ms, nperiod=2086)
-.note final position of the robot is x=14.4804;z=17.5;theta=0
+-- end (at t=1001 ms, nperiod=1041)
+.note final position of the robot is x=10.5026;z=5.5;theta=0
 ```
 
 And there is a `-m path/to/the/file/.map` if you want to change the robot environment.

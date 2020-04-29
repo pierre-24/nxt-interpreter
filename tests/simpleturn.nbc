@@ -1,10 +1,8 @@
 // turn left by 90° = pi/2 radians.
 
 thread main
-    OnFwd(OUT_A,20) // Note: left and right motors are assumed to be on OUT_A and OUT_B
-    OnFwd(OUT_B,-20)
-    wait 1856
+    OnFwd(OUT_B,80) // Note: left and right motors are assumed to be on OUT_A and OUT_B
+    OnFwd(OUT_C,-80)
+    wait 256
     Off(OUT_AB)
-    /*OnFwd(OUT_AB, 100)
-    wait 100 // thus, z value is increasing !!*/
 endt

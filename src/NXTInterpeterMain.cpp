@@ -14,7 +14,7 @@
 #define TOTAL_ROUND .001f // [s]
 
 std::string default_map =
-        "25;25 5;5"
+        "25;25 12;12"
         "* * * * * * * * * * * * * * * * * * * * * * * * *"
         "* o o o o o o o o o o o o o o o o o o o o o o o *"
         "* o o o o o o o o o o o o o o o o o o o o o o o *"

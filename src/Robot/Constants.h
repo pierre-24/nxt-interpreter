@@ -9,12 +9,12 @@
 
 namespace MotorConstant
 {
-    const float powerToSpeedFactor = 10.f;
+    const float powerToSpeedFactor = 20.f;
 }
 
 namespace RobotConstant {
     // half the robot width, from one wheel to the center
-    const float botHalfWidth = .825f;
+    const float botHalfWidth = .818f;
 
     // width of the robot (from one wheel to the other):
     const float trackWidth = botHalfWidth*2.0f;
@@ -22,7 +22,7 @@ namespace RobotConstant {
     const float robotHalfSpace = 2.f;
 
     // diameter of a wheel
-    const float wheelDiameter = 0.4f;
+    const float wheelDiameter = 0.358f;
 
     // 2D (x and z) dimensions of the robot
     const float4 standard2DBoundingBox[4] = {
@@ -54,8 +54,8 @@ namespace RobotConstant {
     const float sensorXOffset = 1.15f;
 
     // motor ports
-    const int leftMotor = 0; // OUT_A
-    const int rightMotor = 1; // OUT_B
+    const int leftMotor = 1; // OUT_B
+    const int rightMotor = 2; // OUT_C
 }
 
 #endif //NXT_INTERPRETER_CONSTANTS_H
