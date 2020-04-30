@@ -26,6 +26,8 @@ There is a lot of warning (deprecated C++14 stuffs herited from the original sou
 
 ## Usage
 
+### The analyser
+
 
 `rxe_anlyser` is a disassambler of RXE file (excutable NXT format). It gives you the DSTOC section, the Dope Vectors one, the clumps (thread/subroutines) and finally the code.
 Sample output:
@@ -80,7 +82,23 @@ pc	word	Disassembled
 </p>
 </details>
 
+### The interpreter
+
 On the other hand, `nxt_interpreter` is an interpreter. 
+
+```
+$ nxt_interpreter -h
+Usage: nxt_interpreter [options] inputfile
+
+Execute RXE file
+
+   -h: print this help and exit
+   -g: debug output
+   -s <factor>: speedup factor (default=1)
+   -m <map>: map file
+
+```
+
 Sample output (if you want to understand this strange output, check [the source code](tests/file.nbc)):
 
 ```
@@ -88,17 +106,6 @@ $ ./nxt_interpreter ../tests/file.rxe
 this, this, and that 21
 ```
 
-There is also a `-g` option if you want to get an idea on what you robot did (see [the source code](tests/simple.nbc) to understand what happened):
-
-```
-$ ./nxt_interpreter ../tests/simple.rxe -g
-initial position of the robot is x=12.5;z=12.5;theta=0
--- start (at ticks=0)
--- end (at ticks=100002)
-final position of the robot is x=17.5185;z=12.5;theta=0
-```
-
-And there is a `-m path/to/the/file/.map` if you want to change the robot environment.
 For more information about the map, the robot, and its movement, check [there](doc/about_simulation.md).
 
 ## Note: dropped and added stuffs

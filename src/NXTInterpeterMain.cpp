@@ -42,8 +42,9 @@ std::string default_map =
 
 void printUsageAndExit(const std::string& pname)
 {
-    std::cout << "Execute RXE file" << std::endl;
-    std::cout << "Usage: "  << pname << "[options] inputfile" << std::endl;
+    std::cout << "Usage: "  << pname << " [options] inputfile" << std::endl << std::endl;
+    std::cout << "Execute RXE file" << std::endl << std::endl;
+    std::cout << "   -h: print this help and exit" << std::endl;
     std::cout << "   -g: debug output" << std::endl;
     std::cout << "   -s <factor>: speedup factor (default=" << TIME_MULTIPLIER << ")" << std::endl;
     std::cout << "   -m <map>: map file" << std::endl;
@@ -69,6 +70,9 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "-g") == 0)
             debug = true;
+        if (strcmp(argv[i], "-h") == 0) {
+            printUsageAndExit(argv[0]);
+        }
         else if(strcmp(argv[i], "-m") == 0) {
             if (argc <= i + 1) {
                 std::cout << "argument -m: expected filename" << std::endl;
