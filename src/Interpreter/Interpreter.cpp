@@ -3,6 +3,7 @@
 //
 
 #include <chrono>
+#include <iostream>
 
 #include "Interpreter.h"
 #include "InterpreterThread.h"
@@ -14,16 +15,11 @@ Interpreter::Interpreter(const RXEFile *aFile,System *aSystem): file(aFile), sys
     scheduleClump(0); // schedule clump 0
 }
 
-template<typename Clock>
-float timeSinceStart(const std::chrono::time_point<Clock> start) {
-    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count()/1000000.0f;
-}
-
-bool Interpreter::runForTime(float mintime) noexcept(false) {
+bool Interpreter::runForTicks(unsigned int nticks) noexcept(false) {
     if (threads.empty())
         return false;
 
-    float minTimePerThread = mintime / threads.size(); // fair share of computation time, does not account for thread creation or sleeping thread
+    int minTicksPerThread = int(nticks / threads.size()); // fair share of computation time, does not account for thread creation or sleeping thread
     auto it = threads.begin();
 
     while (it != threads.end()) {
@@ -32,11 +28,15 @@ bool Interpreter::runForTime(float mintime) noexcept(false) {
         if (th->done()) {
             it = threads.erase(it);
         } else {
-            if (th->waitingUntilTick() <= system->getTick()) {
-                auto thread_start = std::chrono::high_resolution_clock::now();
+            if (th->waitingUntilTime() <= system->getTimeSinceStart()) {
+                unsigned start = system->getTicks();
                 bool running = true;
-                while (running && timeSinceStart(thread_start) < minTimePerThread)
+                while (running && (system->getTicks() - start) < minTicksPerThread) {
                     running = th->step();
+                    system->tickIt();
+                }
+            } else {
+                system->tickIt(minTicksPerThread);
             }
 
             ++it;

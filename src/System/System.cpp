@@ -23,7 +23,7 @@
 #include "Syscall.h"
 #include "VFile.h"
 
-System::System(const RXEFile* f): networkInterface(nullptr), file(f) {
+System::System(const RXEFile* f): networkInterface(nullptr), file(f), ticksSinceStart(0) {
     memory = new VMMemory(f);
     fileSystem = new VFileSystem();
 }
@@ -378,11 +378,6 @@ int System::getOutputConfiguration(unsigned port, unsigned property)
 	else
 		// Ignored
 		return 0;
-}
-
-unsigned System::getTick()
-{
-	return millisecondsSinceStart();
 }
 
 // file

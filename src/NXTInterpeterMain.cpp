@@ -10,8 +10,7 @@
 
 #include "Environment/Map.h"
 
-#define EXEC_FRACTION 0.1f // [%]
-#define TOTAL_ROUND .001f // [s]
+#define TIME_MULTIPLIER 1 // x
 
 std::string default_map =
         "25;25 12;12"
@@ -44,7 +43,11 @@ std::string default_map =
 void printUsageAndExit(const std::string& pname)
 {
     std::cout << "Execute RXE file" << std::endl;
-    std::cout << "Usage: "  << pname << "[-m mapfile] [-g] inputfile" << std::endl;
+    std::cout << "Usage: "  << pname << "[options] inputfile" << std::endl;
+    std::cout << "   -g: debug output" << std::endl;
+    std::cout << "   -s <factor>: speedup factor (default=" << TIME_MULTIPLIER << ")" << std::endl;
+    std::cout << "   -m <map>: map file" << std::endl;
+
     exit(0);
 }
 
@@ -61,6 +64,7 @@ int main(int argc, char *argv[]) {
     bool debug = false;
     char* filename = nullptr;
     char* map_filename = nullptr;
+    int time_multiplier = TIME_MULTIPLIER;
 
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "-g") == 0)
@@ -72,6 +76,14 @@ int main(int argc, char *argv[]) {
             }
 
             map_filename = argv[i + 1];
+            i += 2;
+        } else if(strcmp(argv[i], "-s") == 0) {
+            if (argc <= i + 1) {
+                std::cout << "argument -s: expected factor" << std::endl;
+                printUsageAndExit(argv[0]);
+            }
+
+            time_multiplier = atoi(argv[i+1]);
             i += 2;
         }
         else
@@ -128,36 +140,31 @@ int main(int argc, char *argv[]) {
     auto* robot = robotInterface->getLocalRobot();
 
     if(debug) {
-        std::cout << ".note initial ";
+        std::cout << "initial ";
         printRobotInfo(robot);
         std::cout << std::endl;
     }
 
     // Simulate
-    float run_time = EXEC_FRACTION * TOTAL_ROUND;
-    int nperiod = 0;
     bool running = true;
 
     if(debug)
-        std::cout << "-- start (at t=" << context->getTick() << " ms)" << std::endl;
+        std::cout << "-- start (at ticks=" << context->getTicks() << ")" << std::endl;
 
     auto start = std::chrono::high_resolution_clock::now();
 
     while (running) {
-        running = context->runForTime(run_time);
-        auto now = std::chrono::high_resolution_clock::now();
-        simulation->update(float(std::chrono::duration_cast<std::chrono::microseconds>(now - start).count()) / 1000000.f);
-        start = now;
-        nperiod += 1;
+        running = context->runForTime(float(time_multiplier) * 0.001f);
+        simulation->update(float(time_multiplier) * 0.001f);
 
         if(running)
-            std::this_thread::sleep_for(std::chrono::microseconds (int((TOTAL_ROUND - run_time) * 1000000.f)));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     if (debug) {
-        std::cout << "-- end (at t=" << context->getTick() << " ms, nperiod=" << nperiod << ")" << std::endl;
+        std::cout << "-- end (at ticks=" << context->getTicks() << ")" << std::endl;
 
-        std::cout << ".note final ";
+        std::cout << "final ";
         printRobotInfo(robot);
         std::cout << std::endl;
     }

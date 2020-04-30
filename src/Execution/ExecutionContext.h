@@ -52,9 +52,11 @@ public:
 	 * lengthy operations, it can return after significantly more than the
 	 * minimal time. On the other hand, if the context is paused, this method
 	 * returns immediately.
-	 * @param mintime The time to execute for.
+	 * @param nticks The time to execute for.
 	 */
-    bool runForTime(float mintime);
+    bool runForTicks(unsigned int nticks);
+
+    bool runForTime(float secs);
 	
 	/*!
 	 * @abstract Sets the interface necessary for communicating with the outside
@@ -67,7 +69,7 @@ public:
 	
 	/*!
 	 * @abstract Sets the context to paused.
-	 * @discussion If the context is paused, the runForTime method does nothing.
+	 * @discussion If the context is paused, the runForTicks method does nothing.
 	 */
 	void setIsPaused(bool pause) throw();
 	
@@ -90,5 +92,5 @@ public:
     /*!
      * @abstract Returns the ticks.
      */
-    unsigned int getTick();
+    unsigned int getTicks();
 };

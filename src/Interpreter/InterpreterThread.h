@@ -136,7 +136,7 @@ public:
 	 * operation will be executed. With this, users can find out how long it
 	 * will be until it operates again.
 	 */
-	unsigned waitingUntilTick() const { return waitUntil; }
+	unsigned waitingUntilTime() const { return waitUntil; }
 
 	/*!
 	 * @abstract Return true if the thread is terminated

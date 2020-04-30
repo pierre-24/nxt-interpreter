@@ -12,7 +12,7 @@ class InterpreterThread;
 /*!
  * @abstract Interpreter object, implement a basic threading mechanism.
  * @discussion Every scheduled clump run on a different virtual thread.
- * When `runForTime()` is called, every thread is executed sequentially once during an equal period of time
+ * When `runForTicks()` is called, every thread is executed sequentially once during an equal period of time
  * (except, of course, if it is waiting).
  */
 class Interpreter {
@@ -42,9 +42,9 @@ public:
 	 * has run out. There is no more code to execute, it exits immediately and return false,
      * while for lengthy operations, it can return after significantly more than the
 	 * minimal time.
-	 * @param mintime The time to execute for.
+	 * @param nticks The time to execute for.
 	 */
-    bool runForTime(float mintime);
+    bool runForTicks(unsigned int nticks);
 
     /*!
      * @abstract schedule the clump

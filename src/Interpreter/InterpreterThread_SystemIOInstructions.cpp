@@ -110,7 +110,7 @@ void InterpreterThread::op_wait(unsigned flags, const uint16_t *params)
 	// 0: Unknown. Seems to be NOT_A_DS_ID usually.
 	// 1: Time to wait for, memory location
 	
-	waitUntil = system->getTick() + memory->getScalarValue(params[1]);
+	waitUntil = system->getTimeSinceStart() + memory->getScalarValue(params[1]);
 }
 
 void InterpreterThread::op_gettick(unsigned flags, const uint16_t *params)
@@ -118,5 +118,5 @@ void InterpreterThread::op_gettick(unsigned flags, const uint16_t *params)
 	// Params:
 	// 0: Destination, memory location
 	
-	memory->setScalarValue(params[0], system->getTick());
+	memory->setScalarValue(params[0], system->getTimeSinceStart());
 }

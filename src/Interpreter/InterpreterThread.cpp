@@ -27,7 +27,7 @@ bool InterpreterThread::step()
 {
 	if (done()) return false;
 	
-	if (system->getTick() < waitUntil)
+	if (system->getTimeSinceStart() < waitUntil)
 		return true;
 	
 	const uint16_t *code = memory->getFile()->getCode();

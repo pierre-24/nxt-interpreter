@@ -25,6 +25,9 @@ class System
 	
 	uint8_t lowspeedOutputBuffer[16];
 	int bytesReady;
+
+    unsigned ticksSinceStart;
+    const unsigned ticksPerMillisecond = 100;
 	
 	// Debug only
 	static const char *nameForInputPartID(unsigned ID);
@@ -63,7 +66,15 @@ public:
 	void setOutputConfiguration(unsigned port, unsigned property, unsigned value);
 	int getOutputConfiguration(unsigned port, unsigned property);
 	
-	unsigned getTick();
+	unsigned getTimeSinceStart() const { return ticksSinceStart / ticksPerMillisecond; }
+
+	unsigned ticksPerMilis() const { return ticksPerMillisecond; }
+
+	void tickIt() { ticksSinceStart += 1; }
+
+	void tickIt(unsigned value) { ticksSinceStart += value; }
+
+    unsigned getTicks() const { return ticksSinceStart; }
 
 	VMMemory* getMemory() { return memory; }
 };

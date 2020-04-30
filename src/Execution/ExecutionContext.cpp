@@ -60,10 +60,16 @@ void ExecutionContext::reload()
 	if (networkInterface) system->setNetworkInterface(networkInterface);
 }
 
-bool ExecutionContext::runForTime(float mintime) noexcept(false)
+bool ExecutionContext::runForTicks(unsigned int nticks) noexcept(false)
 {
 	if (isPaused) return true;
-    return interpreter->runForTime(mintime);
+    return interpreter->runForTicks(nticks);
+}
+
+bool ExecutionContext::runForTime(float secs) noexcept(false)
+{
+    if (isPaused) return true;
+    return interpreter->runForTicks(unsigned(secs * 1000.f * float(system->ticksPerMilis())));
 }
 
 void ExecutionContext::setIsPaused(bool pause) throw()
@@ -78,6 +84,6 @@ void ExecutionContext::setNetworkInterface(NetworkInterface *anInterface)
 	system->setNetworkInterface(networkInterface);
 }
 
-unsigned int ExecutionContext::getTick() {
-    return this->system->getTick();
+unsigned int ExecutionContext::getTicks() {
+    return this->system->getTicks();
 }
