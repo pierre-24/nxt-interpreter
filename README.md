@@ -95,8 +95,8 @@ Execute RXE file
    -h: print this help and exit
    -g: debug output
    -s <factor>: speedup factor (default=1)
-   -m <map>: map file
-
+   -m <file.map>: map file
+   -c <file.csv>: csv output file (position and angle)
 ```
 
 Sample output (if you want to understand this strange output, check [the source code](tests/file.nbc)):

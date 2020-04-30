@@ -54,6 +54,8 @@ You can use your own map, following the same format, using the `-m path/to/file.
 
 ## Moving
 
+**Note:** you can track the movement of the robot during time with `-c file.csv`, which will output a 4 column CSV: `time, x, z, angle`.
+
 Moving the bot forward is basically (see [there](../tests/simple.nbc)):
 
 ```c
@@ -115,3 +117,4 @@ Of course, the wheel rotation ![](im/alpha_w.png) (in degree) does not correspon
 ![equation](im/alpha_weq.png)
  
 This way seems a little bit more precise (in fact, it adjusts the value by doing a few control and error cycles).
+
