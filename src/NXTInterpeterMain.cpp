@@ -47,7 +47,8 @@ void printUsageAndExit(const std::string& pname)
     std::cout << "   -h: print this help and exit" << std::endl;
     std::cout << "   -g: debug output" << std::endl;
     std::cout << "   -s <factor>: speedup factor (default=" << TIME_MULTIPLIER << ")" << std::endl;
-    std::cout << "   -m <map>: map file" << std::endl;
+    std::cout << "   -m <file.map>: map file" << std::endl;
+    std::cout << "   -c <file.csv>: csv output file (position and angle)" << std::endl;
 
     exit(0);
 }
@@ -59,28 +60,35 @@ void printRobotInfo(const Robot* robot) {
     << ";theta=" << robot->getYaw() * 180. / M_PI;
 }
 
+void outRobotInfo(unsigned tick, const Robot* robot, std::ostream& out) {
+    out << tick
+        << ";" << robot->getPosition()[3][0]
+        << ";" <<  robot->getPosition()[3][2]
+        << ";" << robot->getYaw() * 180. / M_PI << "\n";
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) printUsageAndExit(argv[0]);
 
     bool debug = false;
     char* filename = nullptr;
     char* map_filename = nullptr;
+    char* csv_filename = nullptr;
     int time_multiplier = TIME_MULTIPLIER;
 
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "-g") == 0)
             debug = true;
-        if (strcmp(argv[i], "-h") == 0) {
+        else if (strcmp(argv[i], "-h") == 0) {
             printUsageAndExit(argv[0]);
-        }
-        else if(strcmp(argv[i], "-m") == 0) {
+        } else if(strcmp(argv[i], "-m") == 0) {
             if (argc <= i + 1) {
                 std::cout << "argument -m: expected filename" << std::endl;
                 printUsageAndExit(argv[0]);
             }
 
             map_filename = argv[i + 1];
-            i += 2;
+            i += 1;
         } else if(strcmp(argv[i], "-s") == 0) {
             if (argc <= i + 1) {
                 std::cout << "argument -s: expected factor" << std::endl;
@@ -88,7 +96,15 @@ int main(int argc, char *argv[]) {
             }
 
             time_multiplier = atoi(argv[i+1]);
-            i += 2;
+            i += 1;
+        } else if(strcmp(argv[i], "-c") == 0) {
+            if (argc <= i + 1) {
+                std::cout << "argument -c: expected file" << std::endl;
+                printUsageAndExit(argv[0]);
+            }
+
+            csv_filename = argv[i+1];
+            i += 1;
         }
         else
             filename = argv[i];
@@ -103,7 +119,7 @@ int main(int argc, char *argv[]) {
     try {
         context = new ExecutionContext(filename);
     } catch (std::runtime_error& e ) {
-        std::cout << "An error happened while opening the file: " << e.what() << std::endl;
+        std::cout << "An error happened while opening the file (" << filename << "): " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -128,6 +144,17 @@ int main(int argc, char *argv[]) {
     } catch (std::runtime_error& e) {
         std::cout << "An error happened while parsing the map: " << e.what() << std::endl;
         return EXIT_FAILURE;
+    }
+
+    // open csv file
+    std::ofstream csv_out;
+
+    if(csv_filename) {
+        csv_out.open(csv_filename);
+        if (!csv_out.is_open()) {
+            std::cout << "cannot open CSV output " << csv_filename << std::endl;
+            return EXIT_FAILURE;
+        }
     }
 
     // Setup robot through its "network interface"
@@ -155,14 +182,19 @@ int main(int argc, char *argv[]) {
     if(debug)
         std::cout << "-- start (at ticks=" << context->getTicks() << ")" << std::endl;
 
-    auto start = std::chrono::high_resolution_clock::now();
+    if (csv_out.is_open())
+        outRobotInfo(context->getTicks(), robot, csv_out);
 
     while (running) {
         running = context->runForTime(float(time_multiplier) * 0.001f);
-        simulation->update(float(time_multiplier) * 0.001f);
 
-        if(running)
+        if (csv_out.is_open())
+            outRobotInfo(context->getTicks(), robot, csv_out);
+
+        if(running) {
+            simulation->update(float(time_multiplier) * 0.001f);
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
     }
 
     if (debug) {

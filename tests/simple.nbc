@@ -3,5 +3,4 @@
 thread main
     OnFwd(OUT_BC,80) // Note: left and right motors are assumed to be on OUT_B and OUT_C
     wait 1000 // with the current parameters, that should be about 5 units of distance
-    exit
 endt
