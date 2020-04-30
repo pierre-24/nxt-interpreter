@@ -2,7 +2,6 @@
 
 thread main
     RotateMotorEx(OUT_BC, 80, 410, -100, 1, 1)
-    wait 200
-
     RotateMotorEx(OUT_BC, 80, 410, 100, 1, 1)
+    // RotateMotorEx(OUT_BC, 80, 410, 100, 1, 1)
 endt

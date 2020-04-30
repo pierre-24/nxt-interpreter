@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(nxt_interpreter
         src/NXTInterpeterMain.cpp
         # utils
-        src/utils/Time.cpp
         src/utils/Vec4.cpp
         # execution context
         src/Execution/ExecutionContext.cpp

@@ -12,7 +12,6 @@
 #include "../Robot/NetworkInterface.h"
 #include "../Interpreter/Interpreter.h"
 #include "../System/System.h"
-#include "../utils/Time.h"
 #include "RXEFile.h"
 
 ExecutionContext::ExecutionContext(const char *aFilename) noexcept(false)

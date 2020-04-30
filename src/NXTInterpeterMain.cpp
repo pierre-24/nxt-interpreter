@@ -146,17 +146,6 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    // open csv file
-    std::ofstream csv_out;
-
-    if(csv_filename) {
-        csv_out.open(csv_filename);
-        if (!csv_out.is_open()) {
-            std::cout << "cannot open CSV output " << csv_filename << std::endl;
-            return EXIT_FAILURE;
-        }
-    }
-
     // Setup robot through its "network interface"
     NetworkInterface* robotInterface;
 
@@ -174,6 +163,17 @@ int main(int argc, char *argv[]) {
         std::cout << "initial ";
         printRobotInfo(robot);
         std::cout << std::endl;
+    }
+
+    // open csv file
+    std::ofstream csv_out;
+
+    if(csv_filename) {
+        csv_out.open(csv_filename);
+        if (!csv_out.is_open()) {
+            std::cout << "cannot open CSV output " << csv_filename << std::endl;
+            return EXIT_FAILURE;
+        }
     }
 
     // Simulate
