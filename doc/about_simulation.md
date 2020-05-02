@@ -104,12 +104,12 @@ That can be achieved with the `RotateMotorEx()` macro (see [there](../tests/simp
 
 ```
 RotateMotorEx(
-    OUT_AB, 
-    100, /* output power */
-    410, /* wheel rotation */ 
+    OUT_BC, 
+    80,   /* output power */
+    410,  /* wheel rotation */ 
     -100, /*-100 for a right rotation, +100 for left */ 
-    1, /* should the two motor be synchronyzed ? Yes */ 
-    1 /* should the motor brake at the end ? Yes */)
+    1,    /* should the two motor be synchronyzed ? Yes */ 
+    1     /* should the motor brake at the end ? Yes */)
 ```
 
 Of course, the wheel rotation ![](im/alpha_w.png) (in degree) does not correspond to the robot rotation, *α*. Again, there is a formula, being 

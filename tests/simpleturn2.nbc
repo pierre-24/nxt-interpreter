@@ -1,7 +1,5 @@
 // turn left by 90° = pi/2 radians.
 
 thread main
-    RotateMotorEx(OUT_BC, 80, 410, -100, 1, 1)
-    RotateMotorEx(OUT_BC, 80, 410, 100, 1, 1)
-    // RotateMotorEx(OUT_BC, 80, 410, 100, 1, 1)
+    RotateMotorEx(OUT_BC, 80, 410,-100, 1, 1)
 endt
