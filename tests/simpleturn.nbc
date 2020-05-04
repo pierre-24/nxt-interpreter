@@ -1,8 +1,12 @@
-// turn left by 90° = pi/2 radians.
+// turn right by 90° = pi/2 radians.
 
 thread main
-    OnFwd(OUT_B,80) // Note: left and right motors are assumed to be on OUT_A and OUT_B
-    OnFwd(OUT_C,-80)
-    wait 256
-    Off(OUT_AB)
+    /*
+        OnFwd(OUT_B,80)
+        wait 257
+        Off(OUT_B)
+     */
+
+     // or:
+     RotateMotor(OUT_B, 80, 410)
 endt

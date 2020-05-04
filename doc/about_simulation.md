@@ -78,43 +78,77 @@ gives you the time (in second) required to move by *x* unit of distance at the g
 
 ## Turning
 
-Turning is a bit tricky. Here, I'm assuming that what you are looking for is actually a rotation where the center (the position of the robot) does not actually change:
+Turning is a bit tricky. 
+
+## First option
+
+Here, I'm assuming that what you want is a rotation around a wheel:
+
+![](im/rot2.png)
+
+You can achieve that by only turning one wheel:
+
+```c
+OnFwd(OUT_B,80) // turning left wheel make the robot turn right
+wait 257
+Off(OUT_B)
+```
+
+Here, time, *t*, is the key ingredient to arrive to the right angle, *α* (given in degree). It is given by the following formula : 
+
+![](im/talphap1.png)
+ 
+where *H* is the half width of the robot (currently 0.4085).
+Sadly, due to the precision of the hardware and the values, the angle is not exactly what you expect. 
+
+Another way is to set an expected rotation of the wheel and wait for the wheel to actually get to that point.
+That can be achieved with the `RotateMotor()` macro (see [there](../tests/simpleturn.nbc)):
+
+```
+RotateMotorEx(OUT_B, 80, 410)
+```
+
+Of course, the wheel rotation ![](im/alpha_w.png) (in degree) does not correspond to the robot rotation, *α*. Again, there is a formula, being 
+
+![equation](im/alpha_weq1.png)
+ 
+This way seems a little bit more precise (in fact, it adjusts the value by doing a few control and error cycles).
+
+
+### Second option
+
+Here, I'm assuming that what you are looking for is actually a rotation where the center (the position of the robot) does not actually change:
 
 ![](im/rot.png)
  
-One way to do it is to give a reverse power value to both motors (see [there](../tests/simpleturn.nbc)):
+One way to do it is to give a reverse power value to both motors (see [there](../tests/simpleturn2.nbc)):
 
 ```c
 OnFwd(OUT_B,20) // p=20
 OnFwd(OUT_C,-20) // works as well with `OnRev(OUT_C,20)`
-wait 1028 // t=1.028 s
+wait 513 // t=0.513 s
 ```
 
 By setting the left motor forward and right motor backward, one turn right (so the rotation angle gets negative).
 
-Here, time, *t*, is the key ingredient to arrive to the right angle, *α* (given in degree). It is given by the following formula : 
+Again, there is the `wait` option, which requires to compute time:
 
 ![](im/talphap.png)
 
-where *H* is the half width of the robot (currently 0.818).
-Sadly, due to the precision of the hardware and the values, the angle is not exactly what you expect. Except if you move veeeeeeeery slowly.
+But the same remark concerning the time precision apply.
 
-Another way is to set an expected rotation of the wheel and wait for the wheel to actually get to that point.
-That can be achieved with the `RotateMotorEx()` macro (see [there](../tests/simpleturn2.nbc)):
+Another way can be achieved with the `RotateMotorEx()` macro (see [there](../tests/simpleturn2.nbc)):
 
 ```
 RotateMotorEx(
     OUT_BC, 
     80,   /* output power */
-    410,  /* wheel rotation */ 
-    -100, /*-100 for a right rotation, +100 for left */ 
+    205,  /* wheel rotation */ 
+    -100, /* -100 for a right rotation, +100 for left */ 
     1,    /* should the two motor be synchronyzed ? Yes */ 
     1     /* should the motor brake at the end ? Yes */)
 ```
 
-Of course, the wheel rotation ![](im/alpha_w.png) (in degree) does not correspond to the robot rotation, *α*. Again, there is a formula, being 
+Again, there is a formula, being 
 
 ![equation](im/alpha_weq.png)
- 
-This way seems a little bit more precise (in fact, it adjusts the value by doing a few control and error cycles).
-

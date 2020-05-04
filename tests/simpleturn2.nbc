@@ -1,5 +1,13 @@
-// turn left by 90° = pi/2 radians.
+// turn right by 90° = pi/2 radians.
 
 thread main
-    RotateMotorEx(OUT_BC, 80, 410,-100, 1, 1)
+    /*
+        OnFwd(OUT_B,80)
+        OnFwd(OUT_C,-80)
+        wait 128
+        Off(OUT_BC)
+    */
+
+    // or
+    RotateMotorEx(OUT_BC, 80, 205,-100, 1, 1)
 endt

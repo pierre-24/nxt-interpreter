@@ -14,7 +14,7 @@ namespace MotorConstant
 
 namespace RobotConstant {
     // half the robot width, from one wheel to the center
-    const float botHalfWidth = .818f;
+    const float botHalfWidth = .4085f;
 
     // width of the robot (from one wheel to the other):
     const float trackWidth = botHalfWidth*2.0f;
